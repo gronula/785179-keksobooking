@@ -33,11 +33,11 @@ var FEATURES_ARRAY = [
   'conditioner'
 ];
 
-var PHOTOS_ARRAY = [
-  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-];
+// var PHOTOS_ARRAY = [
+//   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+//   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+//   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+// ];
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -90,6 +90,13 @@ var getRandomArray = function (numberOfElements) {
       object.offer.features[j] = FEATURES_ARRAY[j];
     }
     object.offer.description = '';
+
+    var PHOTOS_ARRAY = [
+      'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+      'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+      'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+    ];
+
     object.offer.photos = PHOTOS_ARRAY.sort(sortRandom);
 
     array.push(object);
