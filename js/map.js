@@ -76,7 +76,7 @@ var getArrayOfRandomLength = function (arr) {
   return newArray;
 };
 
-var getRandomArray = function (numberOfElements) {
+var getRandomArrayPins = function (numberOfElements) {
   var array = [];
   for (var i = 0; i < numberOfElements; i++) {
     array[i] = {
@@ -107,7 +107,7 @@ var getRandomArray = function (numberOfElements) {
   return array;
 };
 
-var adsNearby = getRandomArray(PINS_NUMBER);
+var adsNearby = getRandomArrayPins(PINS_NUMBER);
 
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
@@ -129,9 +129,9 @@ var cardItem = cardTemplate.content.querySelector('.map__card');
 var cardsFragment = document.createDocumentFragment();
 
 var renderPinElement = function (adsNearbyArray) {
-  var pinElement = pinItem.cloneNode(true);
-
   for (var i = 0; i < adsNearbyArray.length; i++) {
+    var pinElement = pinItem.cloneNode(true);
+
     pinElement.style.left = adsNearbyArray[i].location.x - PIN_WIDTH / 2 + 'px';
     pinElement.style.top = adsNearbyArray[i].location.y - PIN_HEIGHT + 'px';
 
