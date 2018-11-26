@@ -1,6 +1,6 @@
 'use strict';
 
-var TITLE_ARRAY = [
+var TITLES_ARRAY = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -11,14 +11,14 @@ var TITLE_ARRAY = [
   'Неуютное бунгало по колено в воде'
 ];
 
-var TYPE_ARRAY = [
+var TYPES_ARRAY = [
   'palace',
   'flat',
   'house',
   'bungalo'
 ];
 
-var CHECK_ARRAY = [
+var CHECKS_ARRAY = [
   '12:00',
   '13:00',
   '14:00'
@@ -84,13 +84,13 @@ var getRandomArray = function (numberOfElements) {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
       offer: {
-        title: TITLE_ARRAY[i],
+        title: TITLES_ARRAY[i],
         price: getRandomInt(MIN_PRICE, MAX_PRICE),
-        type: getRandomArrayElement(TYPE_ARRAY),
+        type: getRandomArrayElement(TYPES_ARRAY),
         rooms: getRandomInt(MIN_ROOMS, MAX_ROOMS),
         guests: getRandomInt(MIN_GUESTS, MAX_GUESTS),
-        checkin: getRandomArrayElement(CHECK_ARRAY),
-        checkout: getRandomArrayElement(CHECK_ARRAY),
+        checkin: getRandomArrayElement(CHECKS_ARRAY),
+        checkout: getRandomArrayElement(CHECKS_ARRAY),
         features: getArrayOfRandomLength(FEATURES_ARRAY),
         description: '',
         photos: sortArrayRandom(PHOTOS_ARRAY)
@@ -112,9 +112,9 @@ var adsNearby = getRandomArray(PINS_NUMBER);
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
-var filtersContainer = document.querySelector('.map__filters-container');
+var filtersContainer = map.querySelector('.map__filters-container');
 
-var pins = document.querySelector('.map__pins');
+var pins = map.querySelector('.map__pins');
 
 var pinTemplate = document.querySelector('#pin');
 
@@ -131,14 +131,20 @@ var cardsFragment = document.createDocumentFragment();
 var renderPinElement = function (adsNearbyArray) {
   var pinElement = pinItem.cloneNode(true);
 
-  pinElement.style.left = adsNearbyArray.location.x - PIN_WIDTH / 2 + 'px';
-  pinElement.style.top = adsNearbyArray.location.y - PIN_HEIGHT + 'px';
+  for (var i = 0; i < adsNearbyArray.length; i++) {
+    pinElement.style.left = adsNearbyArray[i].location.x - PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = adsNearbyArray[i].location.y - PIN_HEIGHT + 'px';
 
-  var pinElementImage = pinElement.querySelector('img');
-  pinElementImage.src = adsNearbyArray.author.avatar;
-  pinElementImage.alt = adsNearbyArray.offer.title;
+    var pinElementImage = pinElement.querySelector('img');
+    pinElementImage.src = adsNearbyArray[i].author.avatar;
+    pinElementImage.alt = adsNearbyArray[i].offer.title;
 
-  return pinElement;
+    pinsFragment.appendChild(pinElement);
+  }
+
+  pins.appendChild(pinsFragment);
+
+  return pins;
 };
 
 var renderCardElement = function (adsNearbyArray) {
@@ -206,13 +212,11 @@ var renderCardElement = function (adsNearbyArray) {
 
   cardElement.querySelector('.popup__avatar').src = adsNearbyArray.author.avatar;
 
+  cardsFragment.appendChild(cardElement);
+  map.insertBefore(cardsFragment, filtersContainer);
+
   return cardElement;
 };
 
-for (var i = 0; i < adsNearby.length; i++) {
-  pinsFragment.appendChild(renderPinElement(adsNearby[i]));
-  cardsFragment.appendChild(renderCardElement(adsNearby[i]));
-}
-
-pins.appendChild(pinsFragment);
-map.insertBefore(cardsFragment, filtersContainer);
+renderPinElement(adsNearby);
+renderCardElement(adsNearby[0]);
