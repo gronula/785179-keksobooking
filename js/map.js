@@ -250,7 +250,7 @@ var deactivateFormElements = function (form) {
 deactivateFormElements(mapFiltersFormElements);
 deactivateFormElements(adFormElements);
 
-mainPin.addEventListener('mouseup', function () {
+var activatePage = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
 
@@ -261,11 +261,32 @@ mainPin.addEventListener('mouseup', function () {
 
   renderPinElement(adsNearby);
 
+  mainPin.removeEventListener('mouseup', activatePage);
+
   var allRenderedPins = pins.querySelectorAll('.map__pin:not(:first-of-type)');
 
+  var pinClickHandler = function (allPins, adsNearbyArray) {
+    var renderCard = function () {
+      renderCardElement(adsNearbyArray);
+
+      var popupClose = map.querySelector('.popup__close');
+      var cardEl = map.querySelector('.map__card');
+
+      var removeChild = function () {
+        map.removeChild(cardEl);
+      };
+
+      popupClose.addEventListener('click', removeChild);
+    };
+
+    allPins.addEventListener('click', renderCard);
+  };
+
   for (var i = 0; i < allRenderedPins.length; i++) {
-    allRenderedPins[i].addEventListener('click', function () {
-      renderCardElement(adsNearby[i]);
-    });
+    pinClickHandler(allRenderedPins[i], adsNearby[i]);
   }
-});
+
+
+};
+
+mainPin.addEventListener('mouseup', activatePage);
