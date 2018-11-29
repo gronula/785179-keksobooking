@@ -55,6 +55,8 @@ var MAX_Y = 630;
 
 var MAIN_PIN_AFTER_HEIGHT = 22;
 
+var ESC_KEYCODE = 27;
+
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -126,8 +128,6 @@ var pinsFragment = document.createDocumentFragment();
 var cardTemplate = document.querySelector('#card');
 
 var cardItem = cardTemplate.content.querySelector('.map__card');
-
-var cardsFragment = document.createDocumentFragment();
 
 var renderPinElement = function (adsNearbyArray) {
   for (var i = 0; i < adsNearbyArray.length; i++) {
@@ -211,8 +211,7 @@ var renderCardElement = function (adsNearbyArray) {
 
   cardElement.querySelector('.popup__avatar').src = adsNearbyArray.author.avatar;
 
-  cardsFragment.appendChild(cardElement);
-  map.insertBefore(cardsFragment, filtersContainer);
+  map.insertBefore(cardElement, filtersContainer);
 };
 
 var mainPin = map.querySelector('.map__pin--main');
@@ -264,14 +263,15 @@ var activatePage = function () {
   mainPin.removeEventListener('mouseup', activatePage);
 
   var allRenderedPins = pins.querySelectorAll('.map__pin:not(:first-of-type)');
+  var isOpen = false;
+
   var pinClickHandler = function (allPins, adsNearbyArray) {
-    var isOpen = false;
     var renderCard = function () {
       if (!isOpen) {
         renderCardElement(adsNearbyArray);
       }
-
       isOpen = true;
+
       var popupClose = map.querySelector('.popup__close');
       var cardEl = map.querySelector('.map__card');
 
@@ -280,7 +280,14 @@ var activatePage = function () {
         isOpen = false;
       };
 
+      var onPopupEscPress = function (evt) {
+        if (evt.keyCode === ESC_KEYCODE) {
+          removeChild();
+        }
+      };
+
       popupClose.addEventListener('click', removeChild);
+      document.addEventListener('keydown', onPopupEscPress);
     };
 
     allPins.addEventListener('click', renderCard);
@@ -289,8 +296,6 @@ var activatePage = function () {
   for (var i = 0; i < allRenderedPins.length; i++) {
     pinClickHandler(allRenderedPins[i], adsNearby[i]);
   }
-
-
 };
 
 mainPin.addEventListener('mouseup', activatePage);
