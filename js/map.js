@@ -264,16 +264,20 @@ var activatePage = function () {
   mainPin.removeEventListener('mouseup', activatePage);
 
   var allRenderedPins = pins.querySelectorAll('.map__pin:not(:first-of-type)');
-
   var pinClickHandler = function (allPins, adsNearbyArray) {
+    var isOpen = false;
     var renderCard = function () {
-      renderCardElement(adsNearbyArray);
+      if (!isOpen) {
+        renderCardElement(adsNearbyArray);
+      }
 
+      isOpen = true;
       var popupClose = map.querySelector('.popup__close');
       var cardEl = map.querySelector('.map__card');
 
       var removeChild = function () {
         map.removeChild(cardEl);
+        isOpen = false;
       };
 
       popupClose.addEventListener('click', removeChild);
