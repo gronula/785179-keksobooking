@@ -283,6 +283,7 @@ var activatePage = function () {
       var onPopupEscPress = function (evt) {
         if (evt.keyCode === ESC_KEYCODE) {
           removeChild();
+          document.removeEventListener('keydown', onPopupEscPress);
         }
       };
 
