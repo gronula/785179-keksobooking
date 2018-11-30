@@ -197,13 +197,13 @@ var renderCardElement = function (adsNearbyArray) {
   cardElementPhotos.innerHTML = '';
   var cardElementPhotosFragment = document.createDocumentFragment();
 
-  for (var j = 0; j < adsNearbyArray.offer.photos.length; j++) {
+  for (i = 0; i < adsNearbyArray.offer.photos.length; i++) {
     var newPhotoElement = document.createElement('img');
     newPhotoElement.className = 'popup__photo';
     newPhotoElement.width = 45;
     newPhotoElement.height = 40;
     newPhotoElement.alt = 'Фотография жилья';
-    newPhotoElement.src = adsNearbyArray.offer.photos[j];
+    newPhotoElement.src = adsNearbyArray.offer.photos[i];
     cardElementPhotosFragment.appendChild(newPhotoElement);
   }
 
@@ -266,22 +266,22 @@ var activatePage = function () {
 var pinClickHandler = function (allPins, adsNearbyArray) {
   allPins.addEventListener('click', function () {
     var popup = map.querySelector('.popup');
-    var popupClose = map.querySelector('.popup__close');
+    var titleAds = adsNearbyArray.offer.title;
 
     var removeChild = function () {
       map.removeChild(popup);
+      document.removeEventListener('keydown', onPopupEscPress);
     };
 
     var onPopupEscPress = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         removeChild();
-        document.removeEventListener('keydown', onPopupEscPress);
       }
     };
 
     var popupCloseClickHandler = function () {
       popup = map.querySelector('.popup');
-      popupClose = popup.querySelector('.popup__close');
+      var popupClose = popup.querySelector('.popup__close');
 
       popupClose.addEventListener('click', removeChild);
       document.addEventListener('keydown', onPopupEscPress);
@@ -290,7 +290,7 @@ var pinClickHandler = function (allPins, adsNearbyArray) {
     if (!popup) {
       renderCardElement(adsNearbyArray);
       popupCloseClickHandler();
-    } else {
+    } else if (popup.querySelector('.popup__title').textContent !== titleAds) {
       removeChild();
       renderCardElement(adsNearbyArray);
       popupCloseClickHandler();
