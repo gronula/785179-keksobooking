@@ -234,20 +234,14 @@ var getMainPinCoordinates = function (pin, width, height) {
 
 adFormAddress.value = getMainPinCoordinates(mainPin, mainPinWidth / 2, mainPinHeight / 2);
 
-var activateFormElements = function (form) {
+var activateFormElements = function (form, isActive) {
   for (var i = 0; i < form.length; i++) {
-    form[i].disabled = false;
+    form[i].disabled = isActive;
   }
 };
 
-var deactivateFormElements = function (form) {
-  for (var i = 0; i < form.length; i++) {
-    form[i].disabled = true;
-  }
-};
-
-deactivateFormElements(mapFiltersFormElements);
-deactivateFormElements(adFormElements);
+activateFormElements(mapFiltersFormElements, true);
+activateFormElements(adFormElements, true);
 
 var activatePage = function () {
   map.classList.remove('map--faded');
@@ -255,48 +249,53 @@ var activatePage = function () {
 
   adFormAddress.value = getMainPinCoordinates(mainPin, mainPinWidth / 2, mainPinHeight + MAIN_PIN_AFTER_HEIGHT);
 
-  activateFormElements(mapFiltersFormElements);
-  activateFormElements(adFormElements);
+  activateFormElements(mapFiltersFormElements, false);
+  activateFormElements(adFormElements, false);
 
   renderPinElement(adsNearby);
 
   mainPin.removeEventListener('mouseup', activatePage);
 
-  var allRenderedPins = pins.querySelectorAll('.map__pin:not(:first-of-type)');
-  var isOpen = false;
+  var allRenderedPins = pins.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-  var pinClickHandler = function (allPins, adsNearbyArray) {
-    var renderCard = function () {
-      if (!isOpen) {
-        renderCardElement(adsNearbyArray);
+  for (var i = 0; i < allRenderedPins.length; i++) {
+    pinClickHandler(allRenderedPins[i], adsNearby[i]);
+  }
+};
+
+var pinClickHandler = function (allPins, adsNearbyArray) {
+  allPins.addEventListener('click', function () {
+    var popup = map.querySelector('.popup');
+    var popupClose = map.querySelector('.popup__close');
+
+    var removeChild = function () {
+      map.removeChild(popup);
+    };
+
+    var onPopupEscPress = function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        removeChild();
+        document.removeEventListener('keydown', onPopupEscPress);
       }
-      isOpen = true;
+    };
 
-      var popupClose = map.querySelector('.popup__close');
-      var cardEl = map.querySelector('.map__card');
-
-      var removeChild = function () {
-        map.removeChild(cardEl);
-        isOpen = false;
-      };
-
-      var onPopupEscPress = function (evt) {
-        if (evt.keyCode === ESC_KEYCODE) {
-          removeChild();
-          document.removeEventListener('keydown', onPopupEscPress);
-        }
-      };
+    var popupCloseClickHandler = function () {
+      popup = map.querySelector('.popup');
+      popupClose = popup.querySelector('.popup__close');
 
       popupClose.addEventListener('click', removeChild);
       document.addEventListener('keydown', onPopupEscPress);
     };
 
-    allPins.addEventListener('click', renderCard);
-  };
-
-  for (var i = 0; i < allRenderedPins.length; i++) {
-    pinClickHandler(allRenderedPins[i], adsNearby[i]);
-  }
+    if (!popup) {
+      renderCardElement(adsNearbyArray);
+      popupCloseClickHandler();
+    } else {
+      removeChild();
+      renderCardElement(adsNearbyArray);
+      popupCloseClickHandler();
+    }
+  });
 };
 
 mainPin.addEventListener('mouseup', activatePage);
