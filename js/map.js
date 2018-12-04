@@ -350,7 +350,6 @@ var adFormReset = adForm.querySelector('.ad-form__reset');
 var adFormErrorStyle = '0 0 0 1px #f00';
 
 var checkTitleValue = function () {
-  adFormErrorStyle = '0 0 0 1px #f00';
   if (adFormTitle.validity.valueMissing) {
     var adFormErrorMessage = 'Добавьте заголовок объявления.';
   } else if (adFormTitle.validity.tooShort) {
@@ -359,11 +358,14 @@ var checkTitleValue = function () {
     adFormErrorMessage = 'Максимальная длина — 100 символов';
   } else {
     adFormErrorMessage = '';
-    adFormErrorStyle = '';
   }
 
   adFormTitle.setCustomValidity(adFormErrorMessage);
-  adFormTitle.style.boxShadow = adFormErrorStyle;
+  if (adFormErrorMessage !== '') {
+    adFormTitle.style.boxShadow = adFormErrorStyle;
+  } else {
+    adFormTitle.style.boxShadow = '';
+  }
 };
 
 var setPriceValue = function () {
@@ -387,9 +389,7 @@ var setPriceValue = function () {
 
   checkPriceValue();
 };
-
 var checkPriceValue = function () {
-  adFormErrorStyle = '0 0 0 1px #f00';
   if (adFormPrice.validity.valueMissing) {
     var adFormErrorMessage = 'Укажите цену за ночь.';
   } else if (adFormPrice.validity.rangeUnderflow) {
@@ -398,11 +398,14 @@ var checkPriceValue = function () {
     adFormErrorMessage = 'Цена за ночь должна быть меньше или равна ' + adFormPrice.max + '.';
   } else {
     adFormErrorMessage = '';
-    adFormErrorStyle = '';
   }
 
   adFormPrice.setCustomValidity(adFormErrorMessage);
-  adFormPrice.style.boxShadow = adFormErrorStyle;
+  if (adFormErrorMessage !== '') {
+    adFormPrice.style.boxShadow = adFormErrorStyle;
+  } else {
+    adFormPrice.style.boxShadow = '';
+  }
 };
 
 var setCapacity = function () {
@@ -446,7 +449,6 @@ var setCapacity = function () {
 };
 
 var checkCapacity = function () {
-  adFormErrorStyle = '0 0 0 1px #f00';
   if ((Number(adFormCapacity.value) > Number(adFormRoomNumber.value)) ||
       (adFormCapacity.value === '0' && adFormRoomNumber.value !== '100')) {
     switch (adFormCapacity.value) {
@@ -461,11 +463,14 @@ var checkCapacity = function () {
     adFormErrorMessage = 'Единственный допустимый вариант: "не для гостей".';
   } else {
     adFormErrorMessage = '';
-    adFormErrorStyle = '';
   }
 
   adFormCapacity.setCustomValidity(adFormErrorMessage);
-  adFormCapacity.style.boxShadow = adFormErrorStyle;
+  if (adFormErrorMessage !== '') {
+    adFormCapacity.style.boxShadow = adFormErrorStyle;
+  } else {
+    adFormCapacity.style.boxShadow = '';
+  }
 };
 
 var setTimeInOut = function (evt) {
