@@ -302,6 +302,7 @@ var activatePage = function () {
   }
 
 
+  adFormTitle.addEventListener('change', checkTitleValue);
   adFormTitle.addEventListener('input', checkTitleValue);
 
   adFormHouseType.addEventListener('change', setPriceValue);
@@ -310,8 +311,8 @@ var activatePage = function () {
   adFormRoomNumber.addEventListener('change', setCapacity);
   adFormCapacity.addEventListener('change', checkCapacity);
 
-  adFormTimeIn.addEventListener('change', setTimeIn);
-  adFormTimeOut.addEventListener('change', setTimeOut);
+  adFormTimeIn.addEventListener('change', setTimeInOut);
+  adFormTimeOut.addEventListener('change', setTimeInOut);
 
   adFormSubmit.addEventListener('click', function () {
     checkTitleValue();
@@ -346,60 +347,62 @@ var adFormTimeIn = adForm.querySelector('#timein');
 var adFormTimeOut = adForm.querySelector('#timeout');
 var adFormSubmit = adForm.querySelector('.ad-form__submit');
 var adFormReset = adForm.querySelector('.ad-form__reset');
-var adFormErrorStyle = '0 0 2px 2px #ff6547';
+var adFormErrorStyle = '0 0 0 1px #f00';
 
 var checkTitleValue = function () {
+  adFormErrorStyle = '0 0 0 1px #f00';
   if (adFormTitle.validity.valueMissing) {
-    adFormTitle.setCustomValidity('Добавьте заголовок объявления.');
-    adFormTitle.style.boxShadow = adFormErrorStyle;
+    var adFormErrorMessage = 'Добавьте заголовок объявления.';
   } else if (adFormTitle.validity.tooShort) {
-    adFormTitle.setCustomValidity('Минимальная длина — 30 символов');
-    adFormTitle.style.boxShadow = adFormErrorStyle;
+    adFormErrorMessage = 'Минимальная длина — 30 символов';
   } else if (adFormTitle.validity.tooLong) {
-    adFormTitle.setCustomValidity('Максимальная длина — 100 символов');
-    adFormTitle.style.boxShadow = adFormErrorStyle;
+    adFormErrorMessage = 'Максимальная длина — 100 символов';
   } else {
-    adFormTitle.setCustomValidity('');
-    adFormTitle.style.boxShadow = '';
+    adFormErrorMessage = '';
+    adFormErrorStyle = '';
   }
+
+  adFormTitle.setCustomValidity(adFormErrorMessage);
+  adFormTitle.style.boxShadow = adFormErrorStyle;
 };
 
 var setPriceValue = function () {
   switch (adFormHouseType.value) {
     case 'bungalo':
-      adFormPrice.min = 0;
-      adFormPrice.placeholder = 0;
+      var minPrice = 0;
       break;
     case 'flat':
-      adFormPrice.min = 1000;
-      adFormPrice.placeholder = 1000;
+      minPrice = 1000;
       break;
     case 'house':
-      adFormPrice.min = 5000;
-      adFormPrice.placeholder = 5000;
+      minPrice = 5000;
       break;
     case 'palace':
-      adFormPrice.min = 10000;
-      adFormPrice.placeholder = 10000;
+      minPrice = 10000;
       break;
   }
+
+  adFormPrice.min = minPrice;
+  adFormPrice.placeholder = minPrice;
+
   checkPriceValue();
 };
 
 var checkPriceValue = function () {
+  adFormErrorStyle = '0 0 0 1px #f00';
   if (adFormPrice.validity.valueMissing) {
-    adFormPrice.setCustomValidity('Укажите цену за ночь.');
-    adFormPrice.style.boxShadow = adFormErrorStyle;
+    var adFormErrorMessage = 'Укажите цену за ночь.';
   } else if (adFormPrice.validity.rangeUnderflow) {
-    adFormPrice.setCustomValidity('Цена за ночь должна быть больше или равна ' + adFormPrice.min + '.');
-    adFormPrice.style.boxShadow = adFormErrorStyle;
+    adFormErrorMessage = 'Цена за ночь должна быть больше или равна ' + adFormPrice.min + '.';
   } else if (adFormPrice.validity.rangeOverflow) {
-    adFormPrice.setCustomValidity('Цена за ночь должна быть меньше или равна ' + adFormPrice.max + '.');
-    adFormPrice.style.boxShadow = adFormErrorStyle;
+    adFormErrorMessage = 'Цена за ночь должна быть меньше или равна ' + adFormPrice.max + '.';
   } else {
-    adFormPrice.setCustomValidity('');
-    adFormPrice.style.boxShadow = '';
+    adFormErrorMessage = '';
+    adFormErrorStyle = '';
   }
+
+  adFormPrice.setCustomValidity(adFormErrorMessage);
+  adFormPrice.style.boxShadow = adFormErrorStyle;
 };
 
 var setCapacity = function () {
@@ -443,58 +446,39 @@ var setCapacity = function () {
 };
 
 var checkCapacity = function () {
+  adFormErrorStyle = '0 0 0 1px #f00';
   if ((Number(adFormCapacity.value) > Number(adFormRoomNumber.value)) ||
       (adFormCapacity.value === '0' && adFormRoomNumber.value !== '100')) {
     switch (adFormCapacity.value) {
       case '0':
-        adFormCapacity.setCustomValidity('Минимальное количество гостей не может быть меньше 1.');
+        var adFormErrorMessage = 'Минимальное количество гостей не может быть меньше 1.';
         break;
       default:
-        adFormCapacity.setCustomValidity('Количество гостей не может быть больше ' + adFormRoomNumber.value + '.');
+        adFormErrorMessage = 'Количество гостей не может быть больше ' + adFormRoomNumber.value + '.';
         break;
     }
-    adFormCapacity.style.boxShadow = adFormErrorStyle;
   } else if (adFormCapacity.value !== '0' && adFormRoomNumber.value === '100') {
-    adFormCapacity.setCustomValidity('Единственный допустимый вариант: "не для гостей".');
-    adFormCapacity.style.boxShadow = adFormErrorStyle;
+    adFormErrorMessage = 'Единственный допустимый вариант: "не для гостей".';
   } else {
-    adFormCapacity.setCustomValidity('');
-    adFormCapacity.style.boxShadow = '';
+    adFormErrorMessage = '';
+    adFormErrorStyle = '';
   }
+
+  adFormCapacity.setCustomValidity(adFormErrorMessage);
+  adFormCapacity.style.boxShadow = adFormErrorStyle;
 };
 
-var setTimeIn = function () {
-  switch (adFormTimeIn.value) {
-    case '12:00':
-      adFormTimeOut.value = adFormTimeIn.value;
-      break;
-    case '13:00':
-      adFormTimeOut.value = adFormTimeIn.value;
-      break;
-    case '14:00':
-      adFormTimeOut.value = adFormTimeIn.value;
-      break;
-  }
-};
-
-var setTimeOut = function () {
-  switch (adFormTimeOut.value) {
-    case '12:00':
-      adFormTimeIn.value = adFormTimeOut.value;
-      break;
-    case '13:00':
-      adFormTimeIn.value = adFormTimeOut.value;
-      break;
-    case '14:00':
-      adFormTimeIn.value = adFormTimeOut.value;
-      break;
+var setTimeInOut = function (evt) {
+  if (evt.target === adFormTimeIn) {
+    adFormTimeOut.value = adFormTimeIn.value;
+  } else {
+    adFormTimeIn.value = adFormTimeOut.value;
   }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
   setPriceValue();
   setCapacity();
-  setTimeIn();
 });
 
 mainPin.addEventListener('mouseup', activatePage);
