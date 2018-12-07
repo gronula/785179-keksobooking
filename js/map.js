@@ -105,6 +105,8 @@ var activatePage = function () {
     for (i = 0; i < allRenderedPins.length; i++) {
       pins.removeChild(allRenderedPins[i]);
     }
+    mainPin.style.left = '570px';
+    mainPin.style.top = '375px';
     adFormReset.removeEventListener('click', clearMap);
   };
 
