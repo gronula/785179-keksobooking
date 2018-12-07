@@ -124,7 +124,7 @@
       activatePage();
     }
 
-    adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT + window.util.MAIN_PIN_TIP_HEIGHT);
+    adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
 
     var startCoords = {
       x: evt.clientX,
@@ -134,7 +134,7 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT + window.util.MAIN_PIN_TIP_HEIGHT);
+      adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
 
       var shift = {
         x: startCoords.x - moveEvt.x,
@@ -146,23 +146,21 @@
         y: moveEvt.clientY
       };
 
-      var mainPinX = Number(mainPin.style.left.slice(0, -2));
-      var mainPinY = Number(mainPin.style.top.slice(0, -2));
-
-      if (mainPinX < window.util.MIN_X) {
-        mainPin.style.left = window.util.MIN_X + 'px';
-      } else if (mainPinX > window.util.MAX_X - window.util.MAIN_PIN_WIDTH) {
-        mainPin.style.left = window.util.MAX_X - window.util.MAIN_PIN_WIDTH + 'px';
+      if ((mainPin.offsetLeft > 0 || shift.x < 0) && (mainPin.offsetLeft < map.clientWidth - window.util.MAIN_PIN_WIDTH || shift.x > 0)) {
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      } else if (mainPin.offsetLeft <= 0 && shift.x >= 0) {
+        mainPin.style.left = 0 + 'px';
+      } else {
+        mainPin.style.left = map.clientWidth - window.util.MAIN_PIN_WIDTH + 'px';
       }
 
-      if (mainPinY < window.util.MIN_Y - window.util.MAIN_PIN_HEIGHT - window.util.MAIN_PIN_TIP_HEIGHT) {
-        mainPin.style.top = window.util.MIN_Y - window.util.MAIN_PIN_HEIGHT - window.util.MAIN_PIN_TIP_HEIGHT + 'px';
-      } else if (mainPinY > window.util.MAX_Y - window.util.MAIN_PIN_HEIGHT - window.util.MAIN_PIN_TIP_HEIGHT) {
-        mainPin.style.top = window.util.MAX_Y - window.util.MAIN_PIN_HEIGHT - window.util.MAIN_PIN_TIP_HEIGHT + 'px';
+      if ((mainPin.offsetTop > window.util.MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y < 0) && (mainPin.offsetTop < window.util.MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y > 0)) {
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      } else if (mainPin.offsetTop <= window.util.MIN_Y && shift.y >= 0) {
+        mainPin.style.top = window.util.MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
+      } else {
+        mainPin.style.top = window.util.MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
       }
-
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
     };
 
     var onMouseUp = function (upEvt) {
