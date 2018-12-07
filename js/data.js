@@ -11,20 +11,17 @@
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'
   ];
-
   var TYPES_ARRAY = [
     'palace',
     'flat',
     'house',
     'bungalo'
   ];
-
   var CHECKS_ARRAY = [
     '12:00',
     '13:00',
     '14:00'
   ];
-
   var FEATURES_ARRAY = [
     'wifi',
     'dishwasher',
@@ -33,13 +30,11 @@
     'elevator',
     'conditioner'
   ];
-
   var PHOTOS_ARRAY = [
     'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
-
   var MIN_PRICE = 1000;
   var MAX_PRICE = 1000000;
   var MIN_ROOMS = 1;
