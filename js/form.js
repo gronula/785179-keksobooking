@@ -16,6 +16,7 @@
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
   var adFormErrorStyle = '0 0 0 1px #f00';
+  var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormReset = adForm.querySelector('.ad-form__reset');
 
   window.form = {
@@ -151,6 +152,11 @@
         adFormTimeIn.value = adFormTimeOut.value;
       }
     },
+    submit: function () {
+      window.form.checkTitleValue();
+      window.form.checkPriceValue();
+      window.form.checkCapacity();
+    },
     reset: function () {
       map.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
@@ -162,6 +168,15 @@
       window.form.setPriceValue();
       window.form.setCapacity();
 
+      adFormTitle.removeEventListener('change', window.form.checkTitleValue);
+      adFormTitle.removeEventListener('input', window.form.checkTitleValue);
+      adFormHouseType.removeEventListener('change', window.form.setPriceValue);
+      adFormPrice.removeEventListener('input', window.form.checkPriceValue);
+      adFormRoomNumber.removeEventListener('change', window.form.setCapacity);
+      adFormCapacity.removeEventListener('change', window.form.checkCapacity);
+      adFormTimeIn.removeEventListener('change', window.form.setTimeInOut);
+      adFormTimeOut.removeEventListener('change', window.form.setTimeInOut);
+      adFormSubmit.removeEventListener('click', window.form.submit);
       adFormReset.removeEventListener('click', window.form.reset);
     }
   };
