@@ -4,6 +4,7 @@
   var map = document.querySelector('.map');
   var pins = map.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
+  var mapOverlay = map.querySelector('.map__overlay');
   var mapFilters = map.querySelector('.map__filters');
   var mapFiltersFormElements = mapFilters.children;
   var adForm = document.querySelector('.ad-form');
@@ -18,8 +19,6 @@
   var adFormTimeOut = adForm.querySelector('#timeout');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormReset = adForm.querySelector('.ad-form__reset');
-
-  var mapOverlay = map.querySelector('.map__overlay');
 
   var removePopup = function () {
     var popup = map.querySelector('.popup');
