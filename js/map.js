@@ -24,6 +24,7 @@
   var errorItem = errorTemplate.content.querySelector('.error');
   var errorItemText = errorItem.querySelector('.error__message');
   var errorItemButton = errorItem.querySelector('.error__button');
+  var isActive = false;
 
   var removePopup = function () {
     var popup = map.querySelector('.popup');
@@ -71,6 +72,7 @@
     mainPin.style.left = '570px';
     mainPin.style.top = '375px';
     adFormReset.removeEventListener('click', clearMap);
+    isActive = false;
   };
 
   var getPinsAgain = function (evt) {
@@ -117,10 +119,11 @@
     errorItemButton.addEventListener('click', getPinsAgain);
     document.addEventListener('click', window.form.removeMessage);
     document.addEventListener('keydown', window.form.onMessageEscPress);
+    isActive = false;
   };
 
   var activatePage = function () {
-    if (map.classList.contains('map--faded')) {
+    if (isActive) {
       window.backend.get(successHandler, errorHandler);
     }
 
@@ -145,7 +148,12 @@
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
 
-        activatePage();
+        if (!isActive) {
+          isActive = true;
+          activatePage();
+        }
+
+        adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
 
         var shift = {
           x: startCoords.x - moveEvt.x,
