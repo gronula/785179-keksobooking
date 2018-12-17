@@ -39,15 +39,8 @@
       }
     },
     filterPins: function (adsNearbyArray) {
-      var DEBOUNCE_INTERVAL = 500;
-      var lastTimeout;
-
       mapFilters.addEventListener('change', function () {
-        if (lastTimeout) {
-          window.clearTimeout(lastTimeout);
-        }
-
-        lastTimeout = window.setTimeout(function () {
+        window.debounce(function () {
           window.map.removePopup();
           window.map.removePins();
 
@@ -119,8 +112,9 @@
                 break;
             }
           }
+
           window.pin.renderPinElement(filteredArray);
-        }, DEBOUNCE_INTERVAL);
+        });
       });
     }
   };
