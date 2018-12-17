@@ -6,10 +6,18 @@
   var pinTemplate = document.querySelector('#pin');
   var pinItem = pinTemplate.content.querySelector('.map__pin');
   var pinsFragment = document.createDocumentFragment();
+  var mapFilters = map.querySelector('.map__filters');
+  var mapFiltersFormElements = mapFilters.children;
+  var houseType = mapFilters.querySelector('#housing-type');
+  var housePrice = mapFilters.querySelector('#housing-price');
+  var houseRooms = mapFilters.querySelector('#housing-rooms');
+  var houseGuests = mapFilters.querySelector('#housing-guests');
+  var houseFeatures = mapFilters.querySelector('#housing-features');
 
   window.pin = {
     renderPinElement: function (adsNearbyArray) {
-      for (var i = 0; i < adsNearbyArray.length; i++) {
+      var MAX_PINS_NUMBER = adsNearbyArray.length > 5 ? 5 : adsNearbyArray.length;
+      for (var i = 0; i < MAX_PINS_NUMBER; i++) {
         if (adsNearbyArray[i].hasOwnProperty('offer')) {
           var pinElement = pinItem.cloneNode(true);
 
@@ -23,8 +31,97 @@
           pinsFragment.appendChild(pinElement);
         }
       }
-
       pins.appendChild(pinsFragment);
+
+      var allRenderedPins = pins.querySelectorAll('.map__pin:not(.map__pin--main)');
+      for (i = 0; i < allRenderedPins.length; i++) {
+        window.map.pinClickHandler(allRenderedPins[i], adsNearbyArray[i]);
+      }
+    },
+    filterPins: function (adsNearbyArray) {
+      var DEBOUNCE_INTERVAL = 500;
+      var lastTimeout;
+
+      mapFilters.addEventListener('change', function () {
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+
+        lastTimeout = window.setTimeout(function () {
+          window.map.removePopup();
+          window.map.removePins();
+
+          for (var i = 0; i < mapFiltersFormElements.length; i++) {
+            switch (mapFiltersFormElements[i]) {
+              case houseType:
+                var filteredArray = adsNearbyArray.filter(function (it) {
+                  if (houseType.value === 'any') {
+                    return it;
+                  } else {
+                    return it.offer.type === houseType.value;
+                  }
+                });
+                break;
+
+              case housePrice:
+                filteredArray = filteredArray.filter(function (it) {
+                  switch (housePrice.value) {
+                    case 'middle':
+                      return it.offer.price >= 10000 && it.offer.price < 50000;
+                    case 'low':
+                      return it.offer.price < 10000;
+                    case 'high':
+                      return it.offer.price >= 50000;
+                    default:
+                      return it;
+                  }
+                });
+                break;
+
+              case houseRooms:
+                filteredArray = filteredArray.filter(function (it) {
+                  if (houseRooms.value === 'any') {
+                    return it;
+                  } else {
+                    return it.offer.rooms === Number(houseRooms.value);
+                  }
+                });
+                break;
+
+              case houseGuests:
+                filteredArray = filteredArray.filter(function (it) {
+                  if (houseGuests.value === 'any') {
+                    return it;
+                  } else {
+                    return it.offer.guests === Number(houseGuests.value);
+                  }
+                });
+                break;
+
+              case houseFeatures:
+                var checkedInputs = houseFeatures.querySelectorAll('input:checked');
+
+                filteredArray = filteredArray.filter(function (it) {
+                  var count = 0;
+
+                  for (var j = 0; j < checkedInputs.length; j++) {
+                    if (it.offer.features.indexOf(checkedInputs[j].value) > -1) {
+                      count++;
+                    }
+                  }
+
+                  if (count === checkedInputs.length) {
+                    return it;
+                  } else {
+                    return false;
+                  }
+                });
+                break;
+            }
+          }
+          window.pin.renderPinElement(filteredArray);
+        }, DEBOUNCE_INTERVAL);
+      });
     }
   };
 })();

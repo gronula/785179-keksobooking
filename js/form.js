@@ -33,6 +33,7 @@
   };
 
   var onSuccess = function () {
+    // debugger
     var overlay = main.querySelector('.error');
     if (overlay) {
       main.replaceChild(successItem, overlay);
@@ -43,6 +44,7 @@
     document.addEventListener('click', window.form.removeMessage);
     document.addEventListener('keydown', window.form.onMessageEscPress);
     adFormSubmit.disabled = false;
+    window.map.isActive = false;
   };
 
   var onError = function (errorMessage) {
@@ -221,6 +223,7 @@
       window.form.activateFormElements(mapFiltersFormElements, true);
       window.form.activateFormElements(adFormElements, true);
       adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT / 2);
+      adFormTitle.style.boxShadow = '';
       window.form.setPriceValue();
       window.form.setCapacity();
 
