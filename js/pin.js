@@ -46,7 +46,7 @@
       for (var i = 0; i < mapFiltersFormElements.length; i++) {
         switch (mapFiltersFormElements[i]) {
           case houseType:
-            var filteredArray = window.map.abc.filter(function (it) {
+            var filteredArray = window.map.adsNearbyArray.filter(function (it) {
               if (houseType.value === 'any') {
                 return it;
               }

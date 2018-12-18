@@ -84,9 +84,9 @@
     errorItemButton.removeEventListener('click', getPinsAgain);
     window.backend.get(successHandler, errorHandler);
   };
-  var abc;
+
   var successHandler = function (pinsArray) {
-    window.map.abc = pinsArray;
+    window.map.adsNearbyArray = pinsArray;
     var overlay = main.querySelector('.error');
     if (overlay) {
       main.removeChild(overlay);
@@ -96,7 +96,6 @@
     adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
 
     window.pin.renderPinElement(pinsArray);
-    window.pin.filterPins();
 
     window.form.activateFormElements(mapFiltersFormElements, false);
     window.form.activateFormElements(adFormElements, false);
@@ -203,7 +202,6 @@
   });
 
   window.map = {
-    abc: abc,
     isActive: isActive,
     removePopup: removePopup,
     removePins: removePins,
