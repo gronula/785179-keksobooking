@@ -16,8 +16,8 @@
 
   window.pin = {
     renderPinElement: function (adsNearbyArray) {
-      var MAX_PINS_NUMBER = adsNearbyArray.length > 5 ? 5 : adsNearbyArray.length;
-      for (var i = 0; i < MAX_PINS_NUMBER; i++) {
+      var maxPinsNumber = adsNearbyArray.length > 5 ? 5 : adsNearbyArray.length;
+      for (var i = 0; i < maxPinsNumber; i++) {
         if (adsNearbyArray[i].hasOwnProperty('offer')) {
           var pinElement = pinItem.cloneNode(true);
 
@@ -37,85 +37,76 @@
       for (i = 0; i < allRenderedPins.length; i++) {
         window.map.pinClickHandler(allRenderedPins[i], adsNearbyArray[i]);
       }
+      mapFilters.addEventListener('change', window.pin.filterPins);
     },
-    filterPins: function (adsNearbyArray) {
-      mapFilters.addEventListener('change', function () {
-        window.debounce(function () {
-          window.map.removePopup();
-          window.map.removePins();
+    filterPins: window.debounce(function () {
+      window.map.removePopup();
+      window.map.removePins();
 
-          for (var i = 0; i < mapFiltersFormElements.length; i++) {
-            switch (mapFiltersFormElements[i]) {
-              case houseType:
-                var filteredArray = adsNearbyArray.filter(function (it) {
-                  if (houseType.value === 'any') {
-                    return it;
-                  } else {
-                    return it.offer.type === houseType.value;
-                  }
-                });
-                break;
+      for (var i = 0; i < mapFiltersFormElements.length; i++) {
+        switch (mapFiltersFormElements[i]) {
+          case houseType:
+            var filteredArray = window.map.abc.filter(function (it) {
+              if (houseType.value === 'any') {
+                return it;
+              }
 
-              case housePrice:
-                filteredArray = filteredArray.filter(function (it) {
-                  switch (housePrice.value) {
-                    case 'middle':
-                      return it.offer.price >= 10000 && it.offer.price < 50000;
-                    case 'low':
-                      return it.offer.price < 10000;
-                    case 'high':
-                      return it.offer.price >= 50000;
-                    default:
-                      return it;
-                  }
-                });
-                break;
+              return it.offer.type === houseType.value;
+            });
+            break;
 
-              case houseRooms:
-                filteredArray = filteredArray.filter(function (it) {
-                  if (houseRooms.value === 'any') {
-                    return it;
-                  } else {
-                    return it.offer.rooms === Number(houseRooms.value);
-                  }
-                });
-                break;
+          case housePrice:
+            filteredArray = filteredArray.filter(function (it) {
+              switch (housePrice.value) {
+                case 'middle':
+                  return it.offer.price >= 10000 && it.offer.price < 50000;
+                case 'low':
+                  return it.offer.price < 10000;
+                case 'high':
+                  return it.offer.price >= 50000;
+                default:
+                  return it;
+              }
+            });
+            break;
 
-              case houseGuests:
-                filteredArray = filteredArray.filter(function (it) {
-                  if (houseGuests.value === 'any') {
-                    return it;
-                  } else {
-                    return it.offer.guests === Number(houseGuests.value);
-                  }
-                });
-                break;
+          case houseRooms:
+            filteredArray = filteredArray.filter(function (it) {
+              if (houseRooms.value === 'any') {
+                return it;
+              }
 
-              case houseFeatures:
-                var checkedInputs = houseFeatures.querySelectorAll('input:checked');
+              return it.offer.rooms === Number(houseRooms.value);
+            });
+            break;
 
-                filteredArray = filteredArray.filter(function (it) {
-                  var count = 0;
+          case houseGuests:
+            filteredArray = filteredArray.filter(function (it) {
+              if (houseGuests.value === 'any') {
+                return it;
+              }
 
-                  for (var j = 0; j < checkedInputs.length; j++) {
-                    if (it.offer.features.indexOf(checkedInputs[j].value) > -1) {
-                      count++;
-                    }
-                  }
+              return it.offer.guests === Number(houseGuests.value);
+            });
+            break;
 
-                  if (count === checkedInputs.length) {
-                    return it;
-                  } else {
-                    return false;
-                  }
-                });
-                break;
-            }
-          }
+          case houseFeatures:
+            var checkedInputs = houseFeatures.querySelectorAll('input:checked');
 
-          window.pin.renderPinElement(filteredArray);
-        });
-      });
-    }
-  };
+            filteredArray = filteredArray.filter(function (it) {
+              var count = 0;
+
+              for (var j = 0; j < checkedInputs.length; j++) {
+                if (it.offer.features.indexOf(checkedInputs[j].value) > -1) {
+                  count++;
+                }
+              }
+
+              return count === checkedInputs.length;
+            });
+            break;
+        }
+      }
+      window.pin.renderPinElement(filteredArray);
+    })};
 })();
