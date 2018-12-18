@@ -40,9 +40,11 @@
     main.insertBefore(successItem, main.firstElementChild);
     window.map.clearMap();
     window.form.reset();
+    mapFilters.removeEventListener('change', window.pin.filterPins);
     document.addEventListener('click', window.form.removeMessage);
     document.addEventListener('keydown', window.form.onMessageEscPress);
     adFormSubmit.disabled = false;
+    window.map.isActive = false;
   };
 
   var onError = function (errorMessage) {
@@ -221,9 +223,11 @@
       window.form.activateFormElements(mapFiltersFormElements, true);
       window.form.activateFormElements(adFormElements, true);
       adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT / 2);
+      adFormTitle.style.boxShadow = '';
       window.form.setPriceValue();
       window.form.setCapacity();
 
+      mapFilters.removeEventListener('change', window.pin.filterPins);
       adFormTitle.removeEventListener('change', window.form.checkTitleValue);
       adFormTitle.removeEventListener('input', window.form.checkTitleValue);
       adFormHouseType.removeEventListener('change', window.form.setPriceValue);
