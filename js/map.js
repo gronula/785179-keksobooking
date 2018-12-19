@@ -10,6 +10,7 @@
   var mapFiltersFormElements = mapFilters.children;
   var adForm = main.querySelector('.ad-form');
   var adFormElements = adForm.children;
+  var adFormAvatarUpload = adForm.querySelector('#avatar');
   var adFormAddress = adForm.querySelector('#address');
   var adFormTitle = adForm.querySelector('#title');
   var adFormHouseType = adForm.querySelector('#type');
@@ -18,6 +19,7 @@
   var adFormCapacity = adForm.querySelector('#capacity');
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
+  var adFormPhotoUpload = adForm.querySelector('#images');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormReset = adForm.querySelector('.ad-form__reset');
   var errorTemplate = document.querySelector('#error');
@@ -100,6 +102,7 @@
     window.form.activateFormElements(mapFiltersFormElements, false);
     window.form.activateFormElements(adFormElements, false);
 
+    adFormAvatarUpload.addEventListener('change', window.upload.singleFileUpload);
     adFormTitle.addEventListener('change', window.form.checkTitleValue);
     adFormTitle.addEventListener('input', window.form.checkTitleValue);
     adFormHouseType.addEventListener('change', window.form.setPriceValue);
@@ -108,6 +111,7 @@
     adFormCapacity.addEventListener('change', window.form.checkCapacity);
     adFormTimeIn.addEventListener('change', window.form.setTimeInOut);
     adFormTimeOut.addEventListener('change', window.form.setTimeInOut);
+    adFormPhotoUpload.addEventListener('change', window.upload.multipleFileUpload);
     adFormSubmit.addEventListener('click', window.form.submit);
     adFormReset.addEventListener('click', clearMap);
     adFormReset.addEventListener('click', window.form.reset);
@@ -137,6 +141,8 @@
     window.form.activateFormElements(adFormElements, true);
     window.form.setPriceValue();
     window.form.setCapacity();
+    isActive = true;
+    activatePage();
 
     mainPin.addEventListener('mousedown', function (evt) {
       evt.preventDefault();

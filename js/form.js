@@ -8,6 +8,7 @@
   var mapFiltersFormElements = mapFilters.children;
   var adForm = main.querySelector('.ad-form');
   var adFormElements = adForm.children;
+  var adFormAvatarUpload = adForm.querySelector('#avatar');
   var adFormAddress = adForm.querySelector('#address');
   var adFormTitle = adForm.querySelector('#title');
   var adFormHouseType = adForm.querySelector('#type');
@@ -16,6 +17,7 @@
   var adFormCapacity = adForm.querySelector('#capacity');
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
+  var adFormPhotoUpload = adForm.querySelector('#images');
   var adFormErrorStyle = '0 0 0 1px #f00';
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormReset = adForm.querySelector('.ad-form__reset');
@@ -222,12 +224,14 @@
       adForm.reset();
       window.form.activateFormElements(mapFiltersFormElements, true);
       window.form.activateFormElements(adFormElements, true);
+      window.upload.reset();
       adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT / 2);
       adFormTitle.style.boxShadow = '';
       window.form.setPriceValue();
       window.form.setCapacity();
 
       mapFilters.removeEventListener('change', window.pin.filterPins);
+      adFormAvatarUpload.removeEventListener('change', window.upload.singleFileUpload);
       adFormTitle.removeEventListener('change', window.form.checkTitleValue);
       adFormTitle.removeEventListener('input', window.form.checkTitleValue);
       adFormHouseType.removeEventListener('change', window.form.setPriceValue);
@@ -236,6 +240,7 @@
       adFormCapacity.removeEventListener('change', window.form.checkCapacity);
       adFormTimeIn.removeEventListener('change', window.form.setTimeInOut);
       adFormTimeOut.removeEventListener('change', window.form.setTimeInOut);
+      adFormPhotoUpload.removeEventListener('change', window.upload.multipleFileUpload);
       adFormSubmit.removeEventListener('click', window.form.submit);
       adFormReset.removeEventListener('click', window.form.reset);
     }
