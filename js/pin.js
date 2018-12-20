@@ -19,7 +19,7 @@
   var houseFeatures = mapFilters.querySelector('#housing-features');
 
   window.pin = {
-    render: function (adsNearbyArray) {
+    renderHandler: function (adsNearbyArray) {
       var maxPinsNumber = adsNearbyArray.length > 5 ? 5 : adsNearbyArray.length;
       for (var i = 0; i < maxPinsNumber; i++) {
         if (adsNearbyArray[i].hasOwnProperty('offer')) {
@@ -41,11 +41,11 @@
       for (i = 0; i < allRenderedPins.length; i++) {
         window.map.pinClickHandler(allRenderedPins[i], adsNearbyArray[i]);
       }
-      mapFilters.addEventListener('change', window.pin.filter);
+      mapFilters.addEventListener('change', window.pin.filterHandler);
     },
-    filter: window.debounce(function () {
-      window.map.removePopup();
-      window.map.removePins();
+    filterHandler: window.debounce(function () {
+      window.map.popupRemoveHandler();
+      window.map.pinsRemoveHandler();
 
       for (var i = 0; i < mapFilters.children.length; i++) {
         switch (mapFilters.children[i]) {

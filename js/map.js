@@ -17,7 +17,7 @@
   var adFormTitle = adForm.querySelector('#title');
   var adFormHouseType = adForm.querySelector('#type');
   var adFormPrice = adForm.querySelector('#price');
-  var adFormRoomNumber = adForm.querySelector('#room_number');
+  var adFormRoomsNumber = adForm.querySelector('#room_number');
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
   var adFormPhotoUpload = adForm.querySelector('#images');
@@ -29,62 +29,62 @@
   var errorItemButton = errorItem.querySelector('.error__button');
   var isActive = false;
 
-  var removePopup = function () {
+  var popupRemoveHandler = function () {
     if (map.querySelector('.popup')) {
       var popup = map.querySelector('.popup');
       var currentPin = map.querySelector('.map__pin--active');
       currentPin.classList.remove('map__pin--active');
       map.removeChild(popup);
-      mapOverlay.removeEventListener('click', removePopup);
+      mapOverlay.removeEventListener('click', popupRemoveHandler);
       document.removeEventListener('keydown', popupEscHandler);
     }
   };
 
-  var removePins = function () {
+  var pinsRemoveHandler = function () {
     var allRenderedPins = pins.querySelectorAll('.map__pin:not(.map__pin--main)');
     for (var i = 0; i < allRenderedPins.length; i++) {
       pins.removeChild(allRenderedPins[i]);
     }
   };
 
-  var clear = function () {
-    removePopup();
-    removePins();
+  var resetClickHandler = function () {
+    popupRemoveHandler();
+    pinsRemoveHandler();
     mainPin.style.left = '570px';
     mainPin.style.top = '375px';
-    adFormReset.removeEventListener('click', clear);
+    adFormReset.removeEventListener('click', resetClickHandler);
     isActive = false;
   };
 
   var popupEscHandler = function (evt) {
-    window.util.isEscEvent(evt, removePopup);
+    window.util.isEscEvent(evt, popupRemoveHandler);
   };
 
   var pinClickHandler = function (allPins, adsNearbyItem) {
     allPins.addEventListener('click', function () {
-      mapOverlay.addEventListener('click', removePopup);
+      mapOverlay.addEventListener('click', popupRemoveHandler);
       var popup = map.querySelector('.popup');
       if (popup) {
         var titleAds = adsNearbyItem.offer.title;
         if (popup.querySelector('.popup__title').textContent === titleAds) {
           return;
         }
-        removePopup();
-        mapOverlay.addEventListener('click', removePopup);
+        popupRemoveHandler();
+        mapOverlay.addEventListener('click', popupRemoveHandler);
       }
 
       window.card(adsNearbyItem);
       allPins.classList.add('map__pin--active');
       popup = map.querySelector('.popup');
       var popupClose = popup.querySelector('.popup__close');
-      popupClose.addEventListener('click', removePopup);
+      popupClose.addEventListener('click', popupRemoveHandler);
       document.addEventListener('keydown', popupEscHandler);
     });
   };
 
-  var getPinsAgain = function (evt) {
+  var errorButtonClickHandler = function (evt) {
     evt.stopPropagation();
-    errorItemButton.removeEventListener('click', getPinsAgain);
+    errorItemButton.removeEventListener('click', errorButtonClickHandler);
     window.backend.get(successHandler, errorHandler);
   };
 
@@ -103,26 +103,26 @@
     window.form.activate(mapFilters.children, false);
     window.form.activate(adForm.children, false);
 
-    adFormAvatarUpload.addEventListener('change', window.upload.singleFile);
-    adFormTitle.addEventListener('change', window.form.checkTitleValue);
-    adFormTitle.addEventListener('input', window.form.checkTitleValue);
-    adFormHouseType.addEventListener('change', window.form.setPriceValue);
-    adFormPrice.addEventListener('input', window.form.checkPriceValue);
-    adFormRoomNumber.addEventListener('change', window.form.setCapacity);
-    adFormTimeIn.addEventListener('change', window.form.setTimeInOut);
-    adFormTimeOut.addEventListener('change', window.form.setTimeInOut);
-    adFormPhotoUpload.addEventListener('change', window.upload.multipleFile);
-    adFormSubmit.addEventListener('click', window.form.submit);
-    adFormReset.addEventListener('click', clear);
-    adFormReset.addEventListener('click', window.form.reset);
+    adFormAvatarUpload.addEventListener('change', window.upload.avatarChangeHandler);
+    adFormTitle.addEventListener('change', window.form.titleChangeHandler);
+    adFormTitle.addEventListener('input', window.form.titleChangeHandler);
+    adFormHouseType.addEventListener('change', window.form.houseTypeChangeHandler);
+    adFormPrice.addEventListener('input', window.form.priceInputHandler);
+    adFormRoomsNumber.addEventListener('change', window.form.roomsNumberChangeHandler);
+    adFormTimeIn.addEventListener('change', window.form.timeChangeHandler);
+    adFormTimeOut.addEventListener('change', window.form.timeChangeHandler);
+    adFormPhotoUpload.addEventListener('change', window.upload.photoChangeHandler);
+    adFormSubmit.addEventListener('click', window.form.submitHandler);
+    adFormReset.addEventListener('click', resetClickHandler);
+    adFormReset.addEventListener('click', window.form.resetHandler);
     isActive = true;
   };
 
   var errorHandler = function (errorMessage) {
     main.insertBefore(errorItem, main.firstElementChild);
     errorItemText.textContent = errorMessage;
-    errorItemButton.addEventListener('click', getPinsAgain);
-    document.addEventListener('click', window.form.removeMessage);
+    errorItemButton.addEventListener('click', errorButtonClickHandler);
+    document.addEventListener('click', window.form.messageClickHandler);
     document.addEventListener('keydown', window.form.messageEscHandler);
     isActive = false;
   };
@@ -145,8 +145,8 @@
     adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.HEIGHT / 2);
     window.form.activate(mapFilters.children, true);
     window.form.activate(adForm.children, true);
-    window.form.setPriceValue();
-    window.form.setCapacity();
+    window.form.houseTypeChangeHandler();
+    window.form.roomsNumberChangeHandler();
 
     mainPin.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -206,9 +206,9 @@
 
   window.map = {
     isActive: isActive,
-    removePopup: removePopup,
-    removePins: removePins,
-    clear: clear,
+    popupRemoveHandler: popupRemoveHandler,
+    pinsRemoveHandler: pinsRemoveHandler,
+    resetClickHandler: resetClickHandler,
     pinClickHandler: pinClickHandler,
     mainPinEnterHandler: mainPinEnterHandler
   };

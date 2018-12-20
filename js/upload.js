@@ -32,7 +32,7 @@
   };
 
   window.upload = {
-    singleFile: function () {
+    avatarChangeHandler: function () {
       var adFormAvatarPreview = adForm.querySelector('.ad-form-header__preview img');
       var file = this.files[0];
       var fileName = file.name.toLowerCase();
@@ -59,7 +59,7 @@
         reader.readAsDataURL(file);
       }
     },
-    multipleFile: function () {
+    photoChangeHandler: function () {
       var files = this.files;
       count = 0;
       match = 0;
@@ -93,7 +93,7 @@
         });
       }
     },
-    reset: function () {
+    resetClickHandler: function () {
       if (adFormAvatarContainer.hasAttribute('style')) {
         adFormAvatarContainer.removeAttribute('style');
         adFormAvatarContainer.innerHTML = '<img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44">';

@@ -43,16 +43,16 @@
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
-      window.backend.xhrAbort = function () {
+      window.backend.xhrAbortHandler = function () {
         xhr.abort();
         adFormSubmit.disabled = false;
         isSend = false;
-        adFormReset.removeEventListener('click', window.backend.xhrAbort);
+        adFormReset.removeEventListener('click', window.backend.xhrAbortHandler);
       };
 
       if (!isSend) {
         isSend = true;
-        adFormReset.addEventListener('click', window.backend.xhrAbort);
+        adFormReset.addEventListener('click', window.backend.xhrAbortHandler);
       }
 
       xhrEventsHandler(xhr, loadHandler, errorHandler);
