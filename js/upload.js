@@ -9,7 +9,7 @@
   var adFormPhoto = adForm.querySelector('.ad-form__photo');
   var photoFragment = document.createDocumentFragment();
   var isRemoved = false;
-  var dataURLArray = [];
+  var dataURLsArray = [];
   var count;
   var match;
 
@@ -79,8 +79,8 @@
 
             reader.addEventListener('load', function () {
               count++;
-              if (!dataURLArray.includes(reader.result)) {
-                dataURLArray.push(reader.result);
+              if (!dataURLsArray.includes(reader.result)) {
+                dataURLsArray.push(reader.result);
                 renderPhotos(reader.result);
               }
               if (count === match) {
@@ -111,7 +111,7 @@
         adFormPhotoContainer.appendChild(adFormPhoto);
 
         isRemoved = false;
-        dataURLArray = [];
+        dataURLsArray = [];
       }
     }
   };

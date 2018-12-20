@@ -5,6 +5,12 @@
   var filtersContainer = map.querySelector('.map__filters-container');
   var cardTemplate = document.querySelector('#card');
   var cardItem = cardTemplate.content.querySelector('.map__card');
+  var adsNearbyTypeMap = {
+    'bungalo': 'Бунгало',
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'palace': 'Дворец'
+  };
 
   var checkCardBlock = function (array, element, parent) {
     if (array.length === 0) {
@@ -44,22 +50,7 @@
       cardElementTitle.textContent = adsNearbyArray.offer.title;
       cardElementAddress.textContent = adsNearbyArray.offer.address;
       cardElementPrice.textContent = adsNearbyArray.offer.price + '₽/ночь';
-
-      switch (adsNearbyArray.offer.type) {
-        case 'flat':
-          cardElementType.textContent = 'Квартира';
-          break;
-        case 'bungalo':
-          cardElementType.textContent = 'Бунгало';
-          break;
-        case 'house':
-          cardElementType.textContent = 'Дом';
-          break;
-        case 'palace':
-          cardElementType.textContent = 'Дворец';
-          break;
-      }
-
+      cardElementType.textContent = adsNearbyTypeMap[adsNearbyArray.offer.type];
       cardElementCapacity.textContent = adsNearbyArray.offer.rooms + ' комнаты для ' + adsNearbyArray.offer.guests + ' гостей';
       cardElementTime.textContent = 'Заезд после ' + adsNearbyArray.offer.checkin + ', выезд до ' + adsNearbyArray.offer.checkout;
 

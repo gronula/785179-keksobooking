@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
+
   var map = document.querySelector('.map');
   var pins = map.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin');
@@ -21,8 +24,8 @@
         if (adsNearbyArray[i].hasOwnProperty('offer')) {
           var pinElement = pinItem.cloneNode(true);
 
-          pinElement.style.left = adsNearbyArray[i].location.x - window.util.PIN_WIDTH / 2 + 'px';
-          pinElement.style.top = adsNearbyArray[i].location.y - window.util.PIN_HEIGHT + 'px';
+          pinElement.style.left = adsNearbyArray[i].location.x - PIN_WIDTH / 2 + 'px';
+          pinElement.style.top = adsNearbyArray[i].location.y - PIN_HEIGHT + 'px';
 
           var pinElementImage = pinElement.querySelector('img');
           pinElementImage.src = adsNearbyArray[i].author.avatar;

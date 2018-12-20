@@ -1,25 +1,21 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+
   window.util = {
-    MIN_X: 0,
-    MAX_X: 1200,
-    MIN_Y: 130,
-    MAX_Y: 630,
     MAIN_PIN_WIDTH: 65,
     MAIN_PIN_HEIGHT: 65,
     MAIN_PIN_ACTIVE_HEIGHT: 80,
-    PIN_WIDTH: 50,
-    PIN_HEIGHT: 70,
-    ESC_KEYCODE: 27,
-    ENTER_KEYCODE: 13,
+
     isEscEvent: function (evt, action) {
-      if (evt.keyCode === window.util.ESC_KEYCODE) {
+      if (evt.keyCode === ESC_KEYCODE) {
         action();
       }
     },
     isEnterEvent: function (evt, action) {
-      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      if (evt.keyCode === ENTER_KEYCODE) {
         action();
       }
     },

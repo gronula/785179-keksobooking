@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MIN_Y = 130;
+  var MAX_Y = 630;
   var main = document.querySelector('main');
   var map = main.querySelector('.map');
   var pins = map.querySelector('.map__pins');
@@ -16,7 +18,6 @@
   var adFormHouseType = adForm.querySelector('#type');
   var adFormPrice = adForm.querySelector('#price');
   var adFormRoomNumber = adForm.querySelector('#room_number');
-  var adFormCapacity = adForm.querySelector('#capacity');
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
   var adFormPhotoUpload = adForm.querySelector('#images');
@@ -35,7 +36,7 @@
       currentPin.classList.remove('map__pin--active');
       map.removeChild(popup);
       mapOverlay.removeEventListener('click', removePopup);
-      document.removeEventListener('keydown', onPopupEscPress);
+      document.removeEventListener('keydown', popupEscHandler);
     }
   };
 
@@ -55,7 +56,7 @@
     isActive = false;
   };
 
-  var onPopupEscPress = function (evt) {
+  var popupEscHandler = function (evt) {
     window.util.isEscEvent(evt, removePopup);
   };
 
@@ -77,7 +78,7 @@
       popup = map.querySelector('.popup');
       var popupClose = popup.querySelector('.popup__close');
       popupClose.addEventListener('click', removePopup);
-      document.addEventListener('keydown', onPopupEscPress);
+      document.addEventListener('keydown', popupEscHandler);
     });
   };
 
@@ -108,7 +109,6 @@
     adFormHouseType.addEventListener('change', window.form.setPriceValue);
     adFormPrice.addEventListener('input', window.form.checkPriceValue);
     adFormRoomNumber.addEventListener('change', window.form.setCapacity);
-    adFormCapacity.addEventListener('change', window.form.checkCapacity);
     adFormTimeIn.addEventListener('change', window.form.setTimeInOut);
     adFormTimeOut.addEventListener('change', window.form.setTimeInOut);
     adFormPhotoUpload.addEventListener('change', window.upload.multipleFileUpload);
@@ -123,12 +123,13 @@
     errorItemText.textContent = errorMessage;
     errorItemButton.addEventListener('click', getPinsAgain);
     document.addEventListener('click', window.form.removeMessage);
-    document.addEventListener('keydown', window.form.onMessageEscPress);
+    document.addEventListener('keydown', window.form.messageEscHandler);
     isActive = false;
   };
 
   var activatePage = function () {
-    if (isActive) {
+    if (!isActive) {
+      isActive = true;
       window.backend.get(successHandler, errorHandler);
     }
 
@@ -141,8 +142,6 @@
     window.form.activateFormElements(adFormElements, true);
     window.form.setPriceValue();
     window.form.setCapacity();
-    isActive = true;
-    activatePage();
 
     mainPin.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -152,13 +151,10 @@
         y: evt.clientY
       };
 
-      var onMouseMove = function (moveEvt) {
+      var mouseMoveHandler = function (moveEvt) {
         moveEvt.preventDefault();
 
-        if (!isActive) {
-          isActive = true;
-          activatePage();
-        }
+        activatePage();
 
         adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
 
@@ -180,30 +176,27 @@
           mainPin.style.left = map.clientWidth - window.util.MAIN_PIN_WIDTH + 'px';
         }
 
-        if ((mainPin.offsetTop > window.util.MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y < 0) && (mainPin.offsetTop < window.util.MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y > 0)) {
+        if ((mainPin.offsetTop > MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y < 0) && (mainPin.offsetTop < MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT || shift.y > 0)) {
           mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-        } else if (mainPin.offsetTop <= window.util.MIN_Y && shift.y >= 0) {
-          mainPin.style.top = window.util.MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
+        } else if (mainPin.offsetTop <= MIN_Y && shift.y >= 0) {
+          mainPin.style.top = MIN_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
         } else {
-          mainPin.style.top = window.util.MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
+          mainPin.style.top = MAX_Y - window.util.MAIN_PIN_ACTIVE_HEIGHT + 'px';
         }
       };
 
-      var onMouseUp = function (upEvt) {
+      var mouseUpHandler = function (upEvt) {
         upEvt.preventDefault();
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
       };
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
     });
     mainPin.addEventListener('keydown', function (evt) {
-      if (!isActive) {
-        isActive = true;
-        window.util.isEnterEvent(evt, activatePage);
-      }
+      window.util.isEnterEvent(evt, activatePage);
     });
   });
 
@@ -212,7 +205,6 @@
     removePopup: removePopup,
     removePins: removePins,
     clearMap: clearMap,
-    getPinsAgain: getPinsAgain,
     pinClickHandler: pinClickHandler
   };
 })();
