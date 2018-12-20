@@ -32,39 +32,49 @@
     }
   };
 
-  window.card = {
-    renderCardElement: function (adsNearbyArray) {
-      var cardElement = cardItem.cloneNode(true);
-      var cardElementAvatar = cardElement.querySelector('.popup__avatar');
-      var cardElementTitle = cardElement.querySelector('.popup__title');
-      var cardElementAddress = cardElement.querySelector('.popup__text--address');
-      var cardElementPrice = cardElement.querySelector('.popup__text--price');
-      var cardElementType = cardElement.querySelector('.popup__type');
-      var cardElementCapacity = cardElement.querySelector('.popup__text--capacity');
-      var cardElementTime = cardElement.querySelector('.popup__text--time');
-      var cardElementFeatures = cardElement.querySelector('.popup__features');
-      var cardElementDescription = cardElement.querySelector('.popup__description');
-      var cardElementPhotos = cardElement.querySelector('.popup__photos');
+  window.card = function (adsNearbyArray) {
+    var card = cardItem.cloneNode(true);
+    var cardAvatar = card.querySelector('.popup__avatar');
+    var cardTitle = card.querySelector('.popup__title');
+    var cardAddress = card.querySelector('.popup__text--address');
+    var cardPrice = card.querySelector('.popup__text--price');
+    var cardType = card.querySelector('.popup__type');
+    var cardCapacity = card.querySelector('.popup__text--capacity');
+    var cardTime = card.querySelector('.popup__text--time');
+    var cardFeatures = card.querySelector('.popup__features');
+    var cardDescription = card.querySelector('.popup__description');
+    var cardPhotos = card.querySelector('.popup__photos');
 
-      cardElementAvatar.src = adsNearbyArray.author.avatar;
-      cardElementTitle.textContent = adsNearbyArray.offer.title;
-      cardElementAddress.textContent = adsNearbyArray.offer.address;
-      cardElementPrice.textContent = adsNearbyArray.offer.price + '₽/ночь';
-      cardElementType.textContent = adsNearbyTypeMap[adsNearbyArray.offer.type];
-      cardElementCapacity.textContent = adsNearbyArray.offer.rooms + ' комнаты для ' + adsNearbyArray.offer.guests + ' гостей';
-      cardElementTime.textContent = 'Заезд после ' + adsNearbyArray.offer.checkin + ', выезд до ' + adsNearbyArray.offer.checkout;
+    cardAvatar.src = adsNearbyArray.author.avatar;
+    cardTitle.textContent = adsNearbyArray.offer.title;
+    cardAddress.textContent = adsNearbyArray.offer.address;
+    cardPrice.textContent = adsNearbyArray.offer.price + '₽/ночь';
+    cardType.textContent = adsNearbyTypeMap[adsNearbyArray.offer.type];
 
-      checkCardBlock(adsNearbyArray.offer.features, cardElement, cardElementFeatures);
-
-      if (adsNearbyArray.offer.description.length === 0) {
-        cardElement.removeChild(cardElementDescription);
-      } else {
-        cardElement.querySelector('.popup__description').textContent = adsNearbyArray.offer.description;
-      }
-
-      checkCardBlock(adsNearbyArray.offer.photos, cardElement, cardElementPhotos);
-
-      map.insertBefore(cardElement, filtersContainer);
+    var rooms = adsNearbyArray.offer.rooms.toString();
+    var roomsText = rooms + ' комнат для ';
+    if (rooms.endsWith('1') && !rooms.endsWith('11')) {
+      roomsText = rooms + ' комната для ';
+    } else if (rooms.endsWith('2') && !rooms.endsWith('12') || rooms.endsWith('3') && !rooms.endsWith('13') || rooms.endsWith('4') && !rooms.endsWith('14')) {
+      roomsText = rooms + ' комнаты для ';
     }
+
+    var guests = adsNearbyArray.offer.guests.toString();
+    var guestsText = guests.endsWith('1') && !guests.endsWith('11') ? guests + ' гостя' : guests + ' гостей';
+
+    cardCapacity.textContent = roomsText + guestsText;
+    cardTime.textContent = 'Заезд после ' + adsNearbyArray.offer.checkin + ', выезд до ' + adsNearbyArray.offer.checkout;
+
+    checkCardBlock(adsNearbyArray.offer.features, card, cardFeatures);
+
+    if (adsNearbyArray.offer.description.length === 0) {
+      card.removeChild(cardDescription);
+    } else {
+      card.querySelector('.popup__description').textContent = adsNearbyArray.offer.description;
+    }
+
+    checkCardBlock(adsNearbyArray.offer.photos, card, cardPhotos);
+
+    map.insertBefore(card, filtersContainer);
   };
 })();

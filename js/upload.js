@@ -9,7 +9,7 @@
   var adFormPhoto = adForm.querySelector('.ad-form__photo');
   var photoFragment = document.createDocumentFragment();
   var isRemoved = false;
-  var dataURLsArray = [];
+  var dataUrlsArray = [];
   var count;
   var match;
 
@@ -32,7 +32,7 @@
   };
 
   window.upload = {
-    singleFileUpload: function () {
+    singleFile: function () {
       var adFormAvatarPreview = adForm.querySelector('.ad-form-header__preview img');
       var file = this.files[0];
       var fileName = file.name.toLowerCase();
@@ -59,7 +59,7 @@
         reader.readAsDataURL(file);
       }
     },
-    multipleFileUpload: function () {
+    multipleFile: function () {
       var files = this.files;
       count = 0;
       match = 0;
@@ -79,8 +79,8 @@
 
             reader.addEventListener('load', function () {
               count++;
-              if (!dataURLsArray.includes(reader.result)) {
-                dataURLsArray.push(reader.result);
+              if (!dataUrlsArray.includes(reader.result)) {
+                dataUrlsArray.push(reader.result);
                 renderPhotos(reader.result);
               }
               if (count === match) {
@@ -111,7 +111,7 @@
         adFormPhotoContainer.appendChild(adFormPhoto);
 
         isRemoved = false;
-        dataURLsArray = [];
+        dataUrlsArray = [];
       }
     }
   };

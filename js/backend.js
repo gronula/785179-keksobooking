@@ -19,9 +19,11 @@
     });
     xhr.addEventListener('error', function () {
       errorHandler('Произошла ошибка соединения');
+      isSend = false;
     });
     xhr.addEventListener('timeout', function () {
       errorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      isSend = false;
     });
 
     xhr.timeout = 10000;
@@ -44,6 +46,7 @@
       window.backend.xhrAbort = function () {
         xhr.abort();
         adFormSubmit.disabled = false;
+        isSend = false;
         adFormReset.removeEventListener('click', window.backend.xhrAbort);
       };
 

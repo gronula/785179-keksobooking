@@ -1,16 +1,16 @@
 'use strict';
 
 (function () {
-  var AD_FORM_TITLE_MIN_LENGTH = 30;
-  var AD_FORM_TITLE_MAX_LENGTH = 100;
+  var AdFormTitleLength = {
+    MIN: 30,
+    MAX: 100
+  };
 
   var main = document.querySelector('main');
   var map = main.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var mapFilters = map.querySelector('.map__filters');
-  var mapFiltersFormElements = mapFilters.children;
   var adForm = main.querySelector('.ad-form');
-  var adFormElements = adForm.children;
   var adFormAvatarUpload = adForm.querySelector('#avatar');
   var adFormAddress = adForm.querySelector('#address');
   var adFormTitle = adForm.querySelector('#title');
@@ -47,8 +47,13 @@
 
   var postFormAgain = function (evt) {
     evt.stopPropagation();
-    errorItemButton.removeEventListener('click', postFormAgain);
-    window.backend.post(new FormData(adForm), successHandler, errorHandler);
+    window.form.checkTitleValue();
+    window.form.setPriceValue();
+    if (adForm.checkValidity()) {
+      adFormSubmit.disabled = true;
+      errorItemButton.removeEventListener('click', postFormAgain);
+      window.backend.post(new FormData(adForm), successHandler, errorHandler);
+    }
   };
 
   var successHandler = function () {
@@ -57,9 +62,10 @@
       main.replaceChild(successItem, overlay);
     }
     main.insertBefore(successItem, main.firstElementChild);
-    window.map.clearMap();
+    window.map.clear();
     window.form.reset();
-    mapFilters.removeEventListener('change', window.pin.filterPins);
+    window.form.setCapacity();
+    mapFilters.removeEventListener('change', window.pin.filter);
     adFormReset.removeEventListener('click', window.backend.xhrAbort);
     document.addEventListener('click', window.form.removeMessage);
     document.addEventListener('keydown', window.form.messageEscHandler);
@@ -70,6 +76,7 @@
   var errorHandler = function (errorMessage) {
     main.insertBefore(errorItem, main.firstElementChild);
     errorItemText.textContent = errorMessage;
+    adFormReset.removeEventListener('click', window.backend.xhrAbort);
     errorItemButton.addEventListener('click', postFormAgain);
     document.addEventListener('click', window.form.removeMessage);
     document.addEventListener('keydown', window.form.messageEscHandler);
@@ -77,28 +84,24 @@
   };
 
   window.form = {
-    activateFormElements: function (form, isActive) {
+    activate: function (form, isActive) {
       for (var i = 0; i < form.length; i++) {
         form[i].disabled = isActive;
       }
     },
     checkTitleValue: function () {
+      var adFormErrorMessage = '';
+
       if (adFormTitle.validity.valueMissing) {
-        var adFormErrorMessage = 'Добавьте заголовок объявления.';
-      } else if (adFormTitle.value.length < AD_FORM_TITLE_MIN_LENGTH) {
+        adFormErrorMessage = 'Добавьте заголовок объявления.';
+      } else if (adFormTitle.value.length < AdFormTitleLength.MIN) {
         adFormErrorMessage = 'Минимальная длина — 30 символов';
-      } else if (adFormTitle.value.length > AD_FORM_TITLE_MAX_LENGTH) {
+      } else if (adFormTitle.value.length > AdFormTitleLength.MAX) {
         adFormErrorMessage = 'Максимальная длина — 100 символов';
-      } else {
-        adFormErrorMessage = '';
       }
 
       adFormTitle.setCustomValidity(adFormErrorMessage);
-      if (adFormErrorMessage !== '') {
-        adFormTitle.style.boxShadow = adFormErrorStyle;
-      } else {
-        adFormTitle.style.boxShadow = '';
-      }
+      adFormTitle.style.boxShadow = adFormErrorMessage !== '' ? adFormErrorStyle : '';
     },
     setPriceValue: function () {
       var minPrice = adFormHouseTypeMap[adFormHouseType.value];
@@ -108,58 +111,44 @@
       window.form.checkPriceValue();
     },
     checkPriceValue: function () {
+      var adFormErrorMessage = '';
+
       if (adFormPrice.validity.valueMissing) {
-        var adFormErrorMessage = 'Укажите цену за ночь.';
+        adFormErrorMessage = 'Укажите цену за ночь.';
       } else if (adFormPrice.validity.rangeUnderflow) {
         adFormErrorMessage = 'Цена за ночь должна быть больше или равна ' + adFormPrice.min + '.';
       } else if (adFormPrice.validity.rangeOverflow) {
         adFormErrorMessage = 'Цена за ночь должна быть меньше или равна ' + adFormPrice.max + '.';
-      } else {
-        adFormErrorMessage = '';
       }
 
       adFormPrice.setCustomValidity(adFormErrorMessage);
-      if (adFormErrorMessage !== '') {
-        adFormPrice.style.boxShadow = adFormErrorStyle;
-      } else {
-        adFormPrice.style.boxShadow = '';
-      }
+      adFormPrice.style.boxShadow = adFormErrorMessage !== '' ? adFormErrorStyle : '';
     },
     setCapacity: function () {
       adFormCapacity.value = adFormRoomNumberMap[adFormRoomNumber.value];
 
       for (var i = 0; i < adFormCapacity.length; i++) {
         if (adFormCapacity.value === '0') {
-          if (adFormCapacity[i].value === '0') {
-            adFormCapacity[i].disabled = false;
-          } else {
-            adFormCapacity[i].disabled = true;
-          }
+          adFormCapacity[i].disabled = adFormCapacity[i].value === '0' ? false : true;
         } else {
-          if (Number(adFormCapacity[i].value) > Number(adFormRoomNumber.value) || adFormCapacity[i].value === '0') {
-            adFormCapacity[i].disabled = true;
-          } else {
-            adFormCapacity[i].disabled = false;
-          }
+          adFormCapacity[i].disabled = Number(adFormCapacity[i].value) > Number(adFormRoomNumber.value) || adFormCapacity[i].value === '0' ? true : false;
         }
       }
     },
     setTimeInOut: function (evt) {
-      if (evt.target === adFormTimeIn) {
-        adFormTimeOut.value = adFormTimeIn.value;
-      } else {
-        adFormTimeIn.value = adFormTimeOut.value;
-      }
+      adFormTimeOut.value = evt.target === adFormTimeIn ? adFormTimeIn.value : adFormTimeOut.value;
+      adFormTimeIn.value = evt.target === adFormTimeOut ? adFormTimeOut.value : adFormTimeIn.value;
     },
     messageEscHandler: function (evt) {
       window.util.isEscEvent(evt, window.form.removeMessage);
     },
     removeMessage: function () {
       switch (main.firstElementChild.classList.value) {
-        case 'promo':
+        case 'success':
+          main.removeChild(main.firstElementChild);
           break;
 
-        default:
+        case 'error':
           main.removeChild(main.firstElementChild);
           break;
       }
@@ -170,9 +159,8 @@
     submit: function (evt) {
       window.form.checkTitleValue();
       window.form.setPriceValue();
-      window.form.setCapacity();
       if (adForm.checkValidity()) {
-        adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_ACTIVE_HEIGHT);
+        adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.ACTIVE_HEIGHT);
         adFormSubmit.disabled = true;
         window.backend.post(new FormData(adForm), successHandler, errorHandler);
       }
@@ -183,16 +171,17 @@
       mapFilters.reset();
       adForm.classList.add('ad-form--disabled');
       adForm.reset();
-      window.form.activateFormElements(mapFiltersFormElements, true);
-      window.form.activateFormElements(adFormElements, true);
+      window.form.activate(mapFilters.children, true);
+      window.form.activate(adForm.children, true);
       window.upload.reset();
-      adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MAIN_PIN_WIDTH / 2, window.util.MAIN_PIN_HEIGHT / 2);
+      adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.HEIGHT / 2);
       adFormTitle.style.boxShadow = '';
       window.form.setPriceValue();
       window.form.setCapacity();
 
-      mapFilters.removeEventListener('change', window.pin.filterPins);
-      adFormAvatarUpload.removeEventListener('change', window.upload.singleFileUpload);
+      mainPin.addEventListener('keydown', window.map.mainPinEnterHandler);
+      mapFilters.removeEventListener('change', window.pin.filter);
+      adFormAvatarUpload.removeEventListener('change', window.upload.singleFile);
       adFormTitle.removeEventListener('change', window.form.checkTitleValue);
       adFormTitle.removeEventListener('input', window.form.checkTitleValue);
       adFormHouseType.removeEventListener('change', window.form.setPriceValue);
@@ -200,7 +189,7 @@
       adFormRoomNumber.removeEventListener('change', window.form.setCapacity);
       adFormTimeIn.removeEventListener('change', window.form.setTimeInOut);
       adFormTimeOut.removeEventListener('change', window.form.setTimeInOut);
-      adFormPhotoUpload.removeEventListener('change', window.upload.multipleFileUpload);
+      adFormPhotoUpload.removeEventListener('change', window.upload.multipleFile);
       adFormSubmit.removeEventListener('click', window.form.submit);
       adFormReset.removeEventListener('click', window.form.reset);
     }
