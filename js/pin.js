@@ -42,9 +42,9 @@
       pins.appendChild(pinsFragment);
 
       var allRenderedPins = pins.querySelectorAll('.map__pin:not(.map__pin--main)');
-      for (i = 0; i < allRenderedPins.length; i++) {
-        window.map.pinClickHandler(allRenderedPins[i], adsNearbyArray[i]);
-      }
+      allRenderedPins.forEach(function (it, j) {
+        window.map.pinClickHandler(it, adsNearbyArray[j]);
+      });
       mapFilters.addEventListener('change', window.pin.filterHandler);
     },
     filterHandler: window.debounce(function () {
@@ -93,9 +93,9 @@
             filteredArray = filteredArray.filter(function (it) {
               var count = 0;
 
-              for (var j = 0; j < checkedInputs.length; j++) {
-                count = it.offer.features.indexOf(checkedInputs[j].value) > -1 ? count + 1 : 0;
-              }
+              checkedInputs.forEach(function (el) {
+                count = it.offer.features.indexOf(el.value) > -1 ? count + 1 : 0;
+              });
 
               return count === checkedInputs.length;
             });

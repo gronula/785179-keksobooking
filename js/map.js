@@ -42,9 +42,9 @@
 
   var pinsRemoveHandler = function () {
     var allRenderedPins = pins.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < allRenderedPins.length; i++) {
-      pins.removeChild(allRenderedPins[i]);
-    }
+    allRenderedPins.forEach(function (it) {
+      pins.removeChild(it);
+    });
   };
 
   var resetClickHandler = function () {
