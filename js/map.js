@@ -98,7 +98,7 @@
     adForm.classList.remove('ad-form--disabled');
     adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.ACTIVE_HEIGHT);
 
-    window.pin.render(pinsArray);
+    window.pin.renderHandler(pinsArray);
 
     window.form.activate(mapFilters.children, false);
     window.form.activate(adForm.children, false);
@@ -107,7 +107,7 @@
     adFormTitle.addEventListener('change', window.form.titleChangeHandler);
     adFormTitle.addEventListener('input', window.form.titleChangeHandler);
     adFormHouseType.addEventListener('change', window.form.houseTypeChangeHandler);
-    adFormPrice.addEventListener('input', window.form.priceInputHandler);
+    adFormPrice.addEventListener('input', window.form.priceChangeHandler);
     adFormRoomsNumber.addEventListener('change', window.form.roomsNumberChangeHandler);
     adFormTimeIn.addEventListener('change', window.form.timeChangeHandler);
     adFormTimeOut.addEventListener('change', window.form.timeChangeHandler);
