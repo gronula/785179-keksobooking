@@ -9,7 +9,7 @@
   var adFormPhoto = adForm.querySelector('.ad-form__photo');
   var photoFragment = document.createDocumentFragment();
   var isRemoved = false;
-  var dataURLArray = [];
+  var dataUrlsArray = [];
   var count;
   var match;
 
@@ -32,7 +32,7 @@
   };
 
   window.upload = {
-    singleFileUpload: function () {
+    avatarChangeHandler: function () {
       var adFormAvatarPreview = adForm.querySelector('.ad-form-header__preview img');
       var file = this.files[0];
       var fileName = file.name.toLowerCase();
@@ -59,7 +59,7 @@
         reader.readAsDataURL(file);
       }
     },
-    multipleFileUpload: function () {
+    photoChangeHandler: function () {
       var files = this.files;
       count = 0;
       match = 0;
@@ -79,8 +79,8 @@
 
             reader.addEventListener('load', function () {
               count++;
-              if (!dataURLArray.includes(reader.result)) {
-                dataURLArray.push(reader.result);
+              if (!dataUrlsArray.includes(reader.result)) {
+                dataUrlsArray.push(reader.result);
                 renderPhotos(reader.result);
               }
               if (count === match) {
@@ -93,7 +93,7 @@
         });
       }
     },
-    reset: function () {
+    resetClickHandler: function () {
       if (adFormAvatarContainer.hasAttribute('style')) {
         adFormAvatarContainer.removeAttribute('style');
         adFormAvatarContainer.innerHTML = '<img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44">';
@@ -111,7 +111,7 @@
         adFormPhotoContainer.appendChild(adFormPhoto);
 
         isRemoved = false;
-        dataURLArray = [];
+        dataUrlsArray = [];
       }
     }
   };
