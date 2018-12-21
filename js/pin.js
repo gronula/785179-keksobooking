@@ -98,6 +98,6 @@
             break;
         }
       }
-      window.pin.render(filteredArray);
+      window.pin.renderHandler(filteredArray);
     })};
 })();
