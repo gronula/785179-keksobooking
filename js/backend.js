@@ -58,11 +58,6 @@
 
       xhrEventsHandler(xhr, loadHandler, errorHandler);
 
-      for (var pair of data.entires()) {
-        console.log(pair);
-
-      }
-
       xhr.open('POST', URL);
       xhr.send(data);
     }
