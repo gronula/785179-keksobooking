@@ -5,6 +5,10 @@
     WIDTH: 50,
     HEIGHT: 70
   };
+  var Price = {
+    MIN: 10000,
+    MAX: 50000
+  };
 
   var map = document.querySelector('.map');
   var pins = map.querySelector('.map__pins');
@@ -59,11 +63,11 @@
             filteredArray = filteredArray.filter(function (it) {
               switch (housePrice.value) {
                 case 'middle':
-                  return it.offer.price >= 10000 && it.offer.price < 50000;
+                  return it.offer.price >= Price.MIN && it.offer.price < Price.MAX;
                 case 'low':
-                  return it.offer.price < 10000;
+                  return it.offer.price < Price.MIN;
                 case 'high':
-                  return it.offer.price >= 50000;
+                  return it.offer.price >= Price.MAX;
                 default:
                   return it;
               }
