@@ -104,9 +104,9 @@
 
         adFormPhotoContainer.removeAttribute('data-load');
 
-        for (var i = 0; i < adFormPhotos.length; i++) {
-          adFormPhotoContainer.removeChild(adFormPhotos[i]);
-        }
+        adFormPhotos.forEach(function (it) {
+          adFormPhotoContainer.removeChild(it);
+        });
 
         adFormPhotoContainer.appendChild(adFormPhoto);
 

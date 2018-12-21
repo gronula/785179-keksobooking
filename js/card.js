@@ -17,16 +17,17 @@
       element.removeChild(parent);
     } else {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < array.length; i++) {
+      array.forEach(function (it) {
         if (parent.classList.contains('popup__features')) {
           var newElement = parent.querySelector('.popup__feature').cloneNode(true);
-          newElement.className = 'popup__feature popup__feature--' + array[i];
+          newElement.className = 'popup__feature popup__feature--' + it;
         } else {
           newElement = parent.querySelector('.popup__photo').cloneNode(true);
-          newElement.src = array[i];
+          newElement.src = it;
         }
         fragment.appendChild(newElement);
-      }
+      });
+
       parent.innerHTML = '';
       parent.appendChild(fragment);
     }

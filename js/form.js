@@ -94,9 +94,9 @@
 
       if (adFormTitle.validity.valueMissing) {
         adFormErrorMessage = 'Добавьте заголовок объявления.';
-      } else if (adFormTitle.value.length < AdFormTitleLength.MIN) {
+      } else if (adFormTitle.value.trim().length < AdFormTitleLength.MIN) {
         adFormErrorMessage = 'Минимальная длина — 30 символов';
-      } else if (adFormTitle.value.length > AdFormTitleLength.MAX) {
+      } else if (adFormTitle.value.trim().length > AdFormTitleLength.MAX) {
         adFormErrorMessage = 'Максимальная длина — 100 символов';
       }
 
@@ -156,7 +156,7 @@
       document.removeEventListener('click', window.form.messageClickHandler);
       document.removeEventListener('keydown', window.form.messageEscHandler);
     },
-    submitHandler: function (evt) {
+    submitHandler: function () {
       window.form.titleChangeHandler();
       window.form.houseTypeChangeHandler();
       if (adForm.checkValidity()) {
@@ -164,7 +164,6 @@
         adFormSubmit.disabled = true;
         window.backend.post(new FormData(adForm), successHandler, errorHandler);
       }
-      evt.preventDefault();
     },
     resetHandler: function () {
       map.classList.add('map--faded');

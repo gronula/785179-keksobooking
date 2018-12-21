@@ -3,6 +3,7 @@
 (function () {
   var URL = 'https://js.dump.academy/keksobooking';
   var XHR_STATUS_OK = 200;
+  var XHR_TIMEOUT = 10000;
 
   var adFormReset = document.querySelector('.ad-form__reset');
   var adFormSubmit = document.querySelector('.ad-form__submit');
@@ -26,7 +27,7 @@
       isSend = false;
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = XHR_TIMEOUT;
   };
 
   window.backend = {
