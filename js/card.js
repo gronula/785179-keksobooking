@@ -33,6 +33,20 @@
     }
   };
 
+  var getEnding = function (number, endingsArray) {
+    if (number % 100 >= 11 && number % 100 <= 19) {
+      return number + endingsArray[2];
+    }
+
+    switch (number % 10) {
+      case 1: return number + endingsArray[0];
+      case 2:
+      case 3:
+      case 4: return number + endingsArray[1];
+      default: return number + endingsArray[2];
+    }
+  };
+
   window.card = function (adsNearbyArray) {
     var card = cardItem.cloneNode(true);
     var cardAvatar = card.querySelector('.popup__avatar');
@@ -51,19 +65,8 @@
     cardAddress.textContent = adsNearbyArray.offer.address;
     cardPrice.textContent = adsNearbyArray.offer.price + '₽/ночь';
     cardType.textContent = adsNearbyTypeMap[adsNearbyArray.offer.type];
-
-    var rooms = adsNearbyArray.offer.rooms.toString();
-    var roomsText = rooms + ' комнат для ';
-    if (rooms.endsWith('1') && !rooms.endsWith('11')) {
-      roomsText = rooms + ' комната для ';
-    } else if (rooms.endsWith('2') && !rooms.endsWith('12') || rooms.endsWith('3') && !rooms.endsWith('13') || rooms.endsWith('4') && !rooms.endsWith('14')) {
-      roomsText = rooms + ' комнаты для ';
-    }
-
-    var guests = adsNearbyArray.offer.guests.toString();
-    var guestsText = guests.endsWith('1') && !guests.endsWith('11') ? guests + ' гостя' : guests + ' гостей';
-
-    cardCapacity.textContent = roomsText + guestsText;
+    cardCapacity.textContent = getEnding(adsNearbyArray.offer.rooms, [' комната для ', ' комнаты для ', ' комнат для ']);
+    cardCapacity.textContent += getEnding(adsNearbyArray.offer.guests, [' гостя', ' гостей', ' гостей']);
     cardTime.textContent = 'Заезд после ' + adsNearbyArray.offer.checkin + ', выезд до ' + adsNearbyArray.offer.checkout;
 
     checkCardBlock(adsNearbyArray.offer.features, card, cardFeatures);

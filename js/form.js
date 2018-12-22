@@ -47,7 +47,7 @@
 
   var formPostAgainHandler = function (evt) {
     evt.stopPropagation();
-    window.form.titleChangeHandler();
+    window.form.titleInputHandler();
     window.form.houseTypeChangeHandler();
     if (adForm.checkValidity()) {
       adFormSubmit.disabled = true;
@@ -66,7 +66,6 @@
     window.form.resetHandler();
     window.form.roomsNumberChangeHandler();
     mapFilters.removeEventListener('change', window.pin.filterHandler);
-    adFormReset.removeEventListener('click', window.backend.xhrAbortHandler);
     document.addEventListener('click', window.form.messageClickHandler);
     document.addEventListener('keydown', window.form.messageEscHandler);
     adFormSubmit.disabled = false;
@@ -76,7 +75,6 @@
   var errorHandler = function (errorMessage) {
     main.insertBefore(errorItem, main.firstElementChild);
     errorItemText.textContent = errorMessage;
-    adFormReset.removeEventListener('click', window.backend.xhrAbortHandler);
     errorItemButton.addEventListener('click', formPostAgainHandler);
     document.addEventListener('click', window.form.messageClickHandler);
     document.addEventListener('keydown', window.form.messageEscHandler);
@@ -89,7 +87,7 @@
         form[i].disabled = isActive;
       }
     },
-    titleChangeHandler: function () {
+    titleInputHandler: function () {
       var adFormErrorMessage = '';
 
       if (adFormTitle.validity.valueMissing) {
@@ -108,9 +106,9 @@
       adFormPrice.min = minPrice;
       adFormPrice.placeholder = minPrice;
 
-      window.form.priceChangeHandler();
+      window.form.priceInputHandler();
     },
-    priceChangeHandler: function () {
+    priceInputHandler: function () {
       var adFormErrorMessage = '';
 
       if (adFormPrice.validity.valueMissing) {
@@ -135,9 +133,11 @@
         }
       }
     },
-    timeChangeHandler: function (evt) {
-      adFormTimeOut.value = evt.target === adFormTimeIn ? adFormTimeIn.value : adFormTimeOut.value;
-      adFormTimeIn.value = evt.target === adFormTimeOut ? adFormTimeOut.value : adFormTimeIn.value;
+    timeOutChangeHandler: function () {
+      adFormTimeIn.value = adFormTimeOut.value;
+    },
+    timeInChangeHandler: function () {
+      adFormTimeOut.value = adFormTimeIn.value;
     },
     messageEscHandler: function (evt) {
       window.util.isEscEvent(evt, window.form.messageClickHandler);
@@ -156,13 +156,14 @@
       document.removeEventListener('click', window.form.messageClickHandler);
       document.removeEventListener('keydown', window.form.messageEscHandler);
     },
-    submitHandler: function () {
-      window.form.titleChangeHandler();
+    submitHandler: function (evt) {
+      window.form.titleInputHandler();
       window.form.houseTypeChangeHandler();
       if (adForm.checkValidity()) {
         adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.ACTIVE_HEIGHT);
         adFormSubmit.disabled = true;
         window.backend.post(new FormData(adForm), successHandler, errorHandler);
+        evt.preventDefault();
       }
     },
     resetHandler: function () {
@@ -184,13 +185,12 @@
       mainPin.addEventListener('keydown', window.map.mainPinEnterHandler);
       mapFilters.removeEventListener('change', window.pin.filterHandler);
       adFormAvatarUpload.removeEventListener('change', window.upload.avatarChangeHandler);
-      adFormTitle.removeEventListener('change', window.form.titleChangeHandler);
-      adFormTitle.removeEventListener('input', window.form.titleChangeHandler);
+      adFormTitle.removeEventListener('input', window.form.titleInputHandler);
       adFormHouseType.removeEventListener('change', window.form.houseTypeChangeHandler);
-      adFormPrice.removeEventListener('input', window.form.priceChangeHandler);
+      adFormPrice.removeEventListener('input', window.form.priceInputHandler);
       adFormRoomsNumber.removeEventListener('change', window.form.roomsNumberChangeHandler);
-      adFormTimeIn.removeEventListener('change', window.form.timeChangeHandler);
-      adFormTimeOut.removeEventListener('change', window.form.timeChangeHandler);
+      adFormTimeIn.removeEventListener('change', window.form.timeInChangeHandler);
+      adFormTimeOut.removeEventListener('change', window.form.timeOutChangeHandler);
       adFormPhotoUpload.removeEventListener('change', window.upload.photoChangeHandler);
       adFormSubmit.removeEventListener('click', window.form.submitHandler);
       adFormReset.removeEventListener('click', window.form.resetHandler);

@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MAX_PINS_NUMBER = 5;
   var PinSize = {
     WIDTH: 50,
     HEIGHT: 70
@@ -24,20 +25,21 @@
 
   window.pin = {
     renderHandler: function (adsNearbyArray) {
-      var maxPinsNumber = adsNearbyArray.length > 5 ? 5 : adsNearbyArray.length;
-      for (var i = 0; i < maxPinsNumber; i++) {
-        if (adsNearbyArray[i].hasOwnProperty('offer')) {
-          var pin = pinItem.cloneNode(true);
-
-          pin.style.left = adsNearbyArray[i].location.x - PinSize.WIDTH / 2 + 'px';
-          pin.style.top = adsNearbyArray[i].location.y - PinSize.HEIGHT + 'px';
-
-          var pinImage = pin.querySelector('img');
-          pinImage.src = adsNearbyArray[i].author.avatar;
-          pinImage.alt = adsNearbyArray[i].offer.title;
-
-          pinsFragment.appendChild(pin);
+      var pinsNumber = adsNearbyArray.length > MAX_PINS_NUMBER ? MAX_PINS_NUMBER : adsNearbyArray.length;
+      for (var i = 0; i < pinsNumber; i++) {
+        if (!adsNearbyArray[i].hasOwnProperty('offer')) {
+          return;
         }
+        var pin = pinItem.cloneNode(true);
+
+        pin.style.left = adsNearbyArray[i].location.x - PinSize.WIDTH / 2 + 'px';
+        pin.style.top = adsNearbyArray[i].location.y - PinSize.HEIGHT + 'px';
+
+        var pinImage = pin.querySelector('img');
+        pinImage.src = adsNearbyArray[i].author.avatar;
+        pinImage.alt = adsNearbyArray[i].offer.title;
+
+        pinsFragment.appendChild(pin);
       }
       pins.appendChild(pinsFragment);
 

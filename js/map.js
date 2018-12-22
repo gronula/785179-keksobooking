@@ -104,13 +104,12 @@
     window.form.activate(adForm.children, false);
 
     adFormAvatarUpload.addEventListener('change', window.upload.avatarChangeHandler);
-    adFormTitle.addEventListener('change', window.form.titleChangeHandler);
-    adFormTitle.addEventListener('input', window.form.titleChangeHandler);
+    adFormTitle.addEventListener('input', window.form.titleInputHandler);
     adFormHouseType.addEventListener('change', window.form.houseTypeChangeHandler);
-    adFormPrice.addEventListener('input', window.form.priceChangeHandler);
+    adFormPrice.addEventListener('input', window.form.priceInputHandler);
     adFormRoomsNumber.addEventListener('change', window.form.roomsNumberChangeHandler);
-    adFormTimeIn.addEventListener('change', window.form.timeChangeHandler);
-    adFormTimeOut.addEventListener('change', window.form.timeChangeHandler);
+    adFormTimeIn.addEventListener('change', window.form.timeInChangeHandler);
+    adFormTimeOut.addEventListener('change', window.form.timeOutChangeHandler);
     adFormPhotoUpload.addEventListener('change', window.upload.photoChangeHandler);
     adFormSubmit.addEventListener('click', window.form.submitHandler);
     adFormReset.addEventListener('click', resetClickHandler);
