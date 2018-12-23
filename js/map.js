@@ -92,6 +92,7 @@
     window.map.adsNearbyArray = pinsArray;
     var overlay = main.querySelector('.error');
     if (overlay) {
+      errorItemButton.removeEventListener('click', errorButtonClickHandler);
       main.removeChild(overlay);
     }
     map.classList.remove('map--faded');
@@ -103,6 +104,7 @@
     window.form.activate(mapFilters.children, false);
     window.form.activate(adForm.children, false);
 
+    mainPin.removeEventListener('keydown', mainPinEnterHandler);
     adFormAvatarUpload.addEventListener('change', window.upload.avatarChangeHandler);
     adFormTitle.addEventListener('input', window.form.titleInputHandler);
     adFormHouseType.addEventListener('change', window.form.houseTypeChangeHandler);
@@ -114,6 +116,10 @@
     adFormSubmit.addEventListener('click', window.form.submitHandler);
     adFormReset.addEventListener('click', resetClickHandler);
     adFormReset.addEventListener('click', window.form.resetHandler);
+    adFormReset.addEventListener('click', function (evt) {
+      evt.preventDefault();
+    });
+
     isActive = true;
   };
 
@@ -133,7 +139,6 @@
     }
 
     adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.ACTIVE_HEIGHT);
-    mainPin.removeEventListener('keydown', mainPinEnterHandler);
   };
 
   var mainPinEnterHandler = function (evt) {

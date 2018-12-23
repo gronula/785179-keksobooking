@@ -10,8 +10,6 @@
   var photoFragment = document.createDocumentFragment();
   var isRemoved = false;
   var dataUrlsArray = [];
-  var count;
-  var match;
 
   var renderPhotos = function (data) {
     var adFormImageContainer = adFormPhoto.cloneNode(true);
@@ -61,37 +59,36 @@
     },
     photoChangeHandler: function () {
       var files = this.files;
-      count = 0;
-      match = 0;
+      var fileNames = [];
+      var count = 0;
+      var match = 0;
 
       for (var i = 0; i < files.length; i++) {
-        var file = files[i].name.toLowerCase();
+        if (files[i].type.startsWith('image')) {
+          fileNames.push(files[i]);
+          match++;
+        }
+      }
 
-        FILE_TYPES.forEach(function (it) {
-          if (file.endsWith(it)) {
-            match++;
-            if (!isRemoved) {
-              isRemoved = true;
-              adFormPhotoContainer.removeChild(adFormPhoto);
-            }
+      if (!isRemoved && match) {
+        isRemoved = true;
+        adFormPhotoContainer.removeChild(adFormPhoto);
+      }
 
-            var reader = new FileReader();
-
-            reader.addEventListener('load', function () {
-              count++;
-              if (!dataUrlsArray.includes(reader.result)) {
-                dataUrlsArray.push(reader.result);
-                renderPhotos(reader.result);
-              }
-              if (count === match) {
-                adFormPhotoContainer.appendChild(photoFragment);
-              }
-            });
-
-            reader.readAsDataURL(files[i]);
+      fileNames.forEach(function (it) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          count++;
+          if (!dataUrlsArray.includes(reader.result)) {
+            dataUrlsArray.push(reader.result);
+            renderPhotos(reader.result);
+          }
+          if (count === match) {
+            adFormPhotoContainer.appendChild(photoFragment);
           }
         });
-      }
+        reader.readAsDataURL(it);
+      });
     },
     resetClickHandler: function () {
       if (adFormAvatarContainer.hasAttribute('style')) {

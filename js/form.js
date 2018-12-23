@@ -99,7 +99,7 @@
       }
 
       adFormTitle.setCustomValidity(adFormErrorMessage);
-      adFormTitle.style.boxShadow = adFormErrorMessage !== '' ? adFormErrorStyle : '';
+      adFormTitle.style.boxShadow = adFormErrorMessage === '' ? '' : adFormErrorStyle;
     },
     houseTypeChangeHandler: function () {
       var minPrice = adFormHouseTypeMap[adFormHouseType.value];
@@ -120,7 +120,7 @@
       }
 
       adFormPrice.setCustomValidity(adFormErrorMessage);
-      adFormPrice.style.boxShadow = adFormErrorMessage !== '' ? adFormErrorStyle : '';
+      adFormPrice.style.boxShadow = adFormErrorMessage === '' ? '' : adFormErrorStyle;
     },
     roomsNumberChangeHandler: function () {
       adFormCapacity.value = adFormRoomsNumberMap[adFormRoomsNumber.value];
@@ -153,6 +153,7 @@
           break;
       }
 
+      errorItemButton.removeEventListener('click', formPostAgainHandler);
       document.removeEventListener('click', window.form.messageClickHandler);
       document.removeEventListener('keydown', window.form.messageEscHandler);
     },
@@ -160,6 +161,7 @@
       window.form.titleInputHandler();
       window.form.houseTypeChangeHandler();
       if (adForm.checkValidity()) {
+        window.map.popupRemoveHandler();
         adFormAddress.value = window.util.getMainPinCoordinates(mainPin, window.util.MainPinSize.WIDTH / 2, window.util.MainPinSize.ACTIVE_HEIGHT);
         adFormSubmit.disabled = true;
         window.backend.post(new FormData(adForm), successHandler, errorHandler);
