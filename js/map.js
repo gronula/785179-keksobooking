@@ -93,6 +93,7 @@
       return it.location.x && it.location.y && it.author.avatar && it.offer.title;
     });
     window.map.adsNearbyArray = pinsArray;
+
     var overlay = main.querySelector('.error');
     if (overlay) {
       errorItemButton.removeEventListener('click', errorButtonClickHandler);

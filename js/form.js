@@ -158,6 +158,7 @@
       document.removeEventListener('keydown', window.form.messageEscHandler);
     },
     submitHandler: function (evt) {
+      mainPin.focus();
       window.form.titleInputHandler();
       window.form.houseTypeChangeHandler();
       if (adForm.checkValidity()) {
