@@ -27,9 +27,6 @@
     renderHandler: function (adsNearbyArray) {
       var pinsNumber = adsNearbyArray.length > MAX_PINS_NUMBER ? MAX_PINS_NUMBER : adsNearbyArray.length;
       for (var i = 0; i < pinsNumber; i++) {
-        if (!adsNearbyArray[i].hasOwnProperty('offer')) {
-          return;
-        }
         var pin = pinItem.cloneNode(true);
 
         pin.style.left = adsNearbyArray[i].location.x - PinSize.WIDTH / 2 + 'px';

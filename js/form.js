@@ -168,7 +168,10 @@
         evt.preventDefault();
       }
     },
-    resetHandler: function () {
+    resetHandler: function (evt) {
+      if (evt) {
+        evt.preventDefault();
+      }
       map.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
 

@@ -89,6 +89,9 @@
   };
 
   var successHandler = function (pinsArray) {
+    pinsArray = pinsArray.filter(function (it) {
+      return it.location.x && it.location.y && it.author.avatar && it.offer.title;
+    });
     window.map.adsNearbyArray = pinsArray;
     var overlay = main.querySelector('.error');
     if (overlay) {
@@ -116,10 +119,6 @@
     adFormSubmit.addEventListener('click', window.form.submitHandler);
     adFormReset.addEventListener('click', resetClickHandler);
     adFormReset.addEventListener('click', window.form.resetHandler);
-    adFormReset.addEventListener('click', function (evt) {
-      evt.preventDefault();
-    });
-
     isActive = true;
   };
 
