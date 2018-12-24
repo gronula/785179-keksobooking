@@ -90,7 +90,11 @@
 
   var successHandler = function (pinsArray) {
     pinsArray = pinsArray.filter(function (it) {
-      return it.location.x && it.location.y && it.author.avatar && it.offer.title;
+      try {
+        return it.location.x && it.location.y && it.author.avatar && it.offer.title;
+      } catch (error) {
+        return false;
+      }
     });
     window.map.adsNearbyArray = pinsArray;
 
